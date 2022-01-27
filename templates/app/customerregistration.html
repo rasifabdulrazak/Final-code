@@ -1,0 +1,37 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Customer Registration{% endblock title %}
+{% block main-content %}
+<div class="container">
+ <div class="row my-3">
+  <div class="col-sm-6 offset-sm-3">
+   <h3>Sign-Up here</h3>
+   <hr>
+   
+
+   <form action="" method="post" novalidate class="shadow p-5">
+      {% if message %}
+      <div class="alert alert-danger" role="alert">
+        <h6 class="text-center text-danger">{{message}}</h6>
+       </div>
+      {% endif %}
+
+      {% csrf_token %}
+      {% for f in form %}
+      <div class="form-group mb-3">
+         {{f.label_tag}}{{f}} <small class="text-danger">{{f.errors|striptags}}</small>
+
+      </div>
+      {% endfor %}
+    <div class="text-center">
+     <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    <br>
+    <div class="text-center text-primary fw-bold"><small>Existing User ? <a href="{% url 'user_login' %}"
+       class="text-danger">Login Now</a> </small></div>
+   </form>
+  </div>
+ </div>
+</div>
+{% endblock main-content %}

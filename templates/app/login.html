@@ -1,0 +1,42 @@
+{% extends 'app/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block main-content %}
+<div class="container">
+ <div class="row my-3">
+  <div class="col-sm-6 offset-sm-3">
+   <h3>Login Here</h3>
+   <hr>
+ 
+   <form action="{% url 'user_login' %}" method="post" novalidate class="shadow p-5">
+       {% if error %}
+    <div class="alert alert-danger" role="alert">
+        <h6 class="text-center text-danger">{{error}}</h6>
+       </div>
+       {% endif %}
+       {% if message %}
+       <div class="alert alert-success" role="alert">
+           <h6 class="text-center text-success">{{message}}</h6>
+          </div>
+          {% endif %}
+       {% csrf_token %}
+       {% for f in form %}
+       <div class="form-group mb-3">
+          {{f.label_tag}}{{f}}<small class="text-danger">{{f.errors|striptags}}</small>
+ 
+       </div>
+       {% endfor %}
+       
+    <div class="d-flex justify-content-between "><span><small><a href="{% url 'password_reset' %}">Forgot Password ?</a></small><br></span></div>
+   
+    <div class="text-center"><button type="submit" class="btn btn-primary mt-4">Login</button></div>
+    <br>
+    <div class="text-center text-primary fw-bold"><small>New to Eshopee ? <a href="{% url 'user_registration' %}"
+       class="text-danger">Create an Account</a> </small></div>
+   </form>
+  </div>
+ </div>
+</div>
+{% endblock main-content %}

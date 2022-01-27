@@ -1,0 +1,104 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Product Detail{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+ <div class="row">
+    {% if product %}
+  <div class="col-sm-6  d-flex text-center align-self-center"  style="margin-top: 3rem;">
+    <div class="previewPane col-md-6 col-12"></div><div id="zoomer"></div>
+      <div class="imgline ">
+   <img src="{{product.image.url}}" alt="" class=" imgkey img-fluid img-thumbnail d-none" id="" >
+</div>
+
+   <!-- <div class="container-fluid product-images d-flex justify-content-evenly mt-5 ">
+    <img  src="{% static 'app/images/3.jpeg' %}" alt="" class="img-fluid img-thumbnail  ">
+    <img src="{% static 'app/images/4.jpeg' %}" alt="" class="img-fluid img-thumbnail  ">
+    <img  src="{% static 'app/images/8.jpeg' %}" alt="" class="img-fluid img-thumbnail  ">
+    
+   </div> -->
+  
+  </div>
+
+  <!-- <div class="col-sm-6 text-center align-self-center">
+    <div class="previewPane"></div><div id="zoomer"></div>
+      <div class="imgline">
+   <img src="{{product.image.url}}" alt="" class=" imgkey img-fluid img-thumbnail d-none" id="" style="height: 25rem; width: auto; ">
+</div>
+
+   <div class="container-fluid product-images d-flex justify-content-evenly mt-5 ">
+    <img  src="{% static 'app/images/3.jpeg' %}" alt="" class="img-fluid img-thumbnail  ">
+    <img src="{% static 'app/images/4.jpeg' %}" alt="" class="img-fluid img-thumbnail  ">
+    <img  src="{% static 'app/images/8.jpeg' %}" alt="" class="img-fluid img-thumbnail  ">
+    
+   </div>
+  
+  </div> -->
+
+  <div class="col-sm-5 offset-sm-1" style="border: rgb(234, 234, 234) solid;">
+   <h2>{{product.title}}</h2>
+   <hr>
+   <p><h4>Product description:</h4>{{product.description}}</p> <br>
+   <p>Color : {{product.color}}</p>
+   <h4>₹{{product.discounted_price}}&nbsp;<small class="fw-light text-decoration-line-through">₹{{product.selling_price}}</small></h4> <br>
+   
+    {% if item_in_cart %}
+     <a href="{% url 'show_cart' %}"><button type="submit" class="btn btn-secondary shadow-lg">Go to cart</button></a>
+    {% else %}
+     <a href="{% url 'add_to_cart' product.id %}"><button type="submit" class="btn btn-primary shadow-lg">Add to cart</button></a>
+    {% endif %}
+  
+   <a href="{% url 'buynow' product.id %}" class="btn btn-danger shadow-lg">Buy Now</a>
+   <h5 class="mt-5">Available Offers</h5>
+   <ul>
+    <li>Bank Offer 5% Unlimited Cashback on Flipkart Axis Bank Credit</li>
+    <li>Special Price Get extra ₹3000 off (price inclusive of discount)</li>
+    <li>No cost EMI ₹1,667/month. Standard EMI also available</li>
+    <li>Partner Offer ₹2000 Flipkart Gift Card on Every 1000th Transaction with a new Visa Debit/Credit Card</li>
+   </ul>
+  </div>
+  {% endif %}
+ </div>
+</div>
+<style>
+    .imgkey{
+        width:200%;
+        height:200%;}
+    .previewPane{
+        /* display:inline-block; */
+        width:300px;
+        height: 300px;
+        cursor:crosshair;
+        background-repeat:no-repeat;
+        /* margin-right: ; */
+        background-size:100%}
+    #zoomer{
+        background: #fff;
+        display:none;
+        background-repeat:no-repeat;
+        width:800px;
+        height:600px;
+        z-index: 1000;
+        position: fixed;
+        right: 5%;
+        top: 13%;
+    }
+</style>
+<script>
+    $(function(){
+    $('.previewPane, #zoomer').css('background-image','url('+$('.imgkey').first().attr('src')+')');
+    $('.imgkey').click(function(){
+    $('.previewPane').css('background-image','url('+$(this).attr('src')+')');
+                });
+    $('.previewPane').mousemove(function(ev){
+    $('#zoomer').css('display','inline-block');
+    var img = $(this).css('background-image').replace(/^url\(['"](.+)['"]\)/, '$1');
+    var posX = ev.offsetX ? (ev.offsetX) : ev.pageX - $(this).offset().left;
+    var posY = ev.offsetY ? (ev.offsetY) : ev.pageY - $(this).offset().top;
+    $('#zoomer').css('background-position',((-posX * 1) + "px " + (-posY * 1) + "px"));
+    $('#zoomer').css('background-image','url('+img+')');
+                });
+    $('.previewPane').mouseleave(function(){$('#zoomer').css('display','none');});
+            });
+</script>
+{% endblock main-content %}

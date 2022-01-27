@@ -1,0 +1,112 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Cart{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+ <div class="row">
+  <h1 class="text-center mb-5">SHOPPING CART</h1>
+  <div class="col-sm-8">
+    {% for prod in cart %}
+  <div class="card">
+   <div class="card-body">
+    <div class="row">
+     <div class="col-sm-3 text-center align-self-center"><img src="{{prod.products.image.url}}" alt="" srcset="" class="img-fluid img-thumbnail shadow-sm" height="150" width="150"> </div>
+     <div class="col-sm-9">
+      <div>
+       <h5>{{prod.products.brand}}</h5>
+       <p class="mb-2 text-muted small">{{prod.products.title}}</p>
+       <p class="mb-2 text-muted small">color: {{prod.products.color}}</p>
+       <div class="my-3">
+        <label for="quantity">Quantity:</label>
+        <a class="minus-cart btn" onclick="" pid = "{{prod.products.id}}"><i class="fas fa-minus-square fa-lg"></i></a>
+          <span id="quantity">{{prod.quantity}}</span>
+        <a class="plus-cart btn" onclick="" pid = "{{prod.products.id}}"><i class="fas fa-plus-square fa-lg"></i></a>
+       </div> 
+       <div class="d-flex justify-content-between">
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal{{prod.products.id}}">
+  Remove-item
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal{{prod.products.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove item from cart
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger remove-cart" pid="{{prod.products.id}}">Remove </button>
+      </div>
+    </div>
+  </div>
+</div>
+        <p class="mb-0"><span><strong>Rs. {{prod.total_cost}}</strong></span></p>
+       </div>
+      </div>
+     </div>
+    </div>
+    <hr class="text-muted">
+   </div>
+   </div>
+   {% endfor %}
+  </div>
+
+  <div class="col-sm-4">
+   <div class="card">
+    <div class="card-body">
+      <h3>The Total Amount of</h3>
+      <ul class="list-group">
+       <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">Amount<span>Rs. <span id="amount">{{amount}}</span></span></li>
+       <li class="list-group-item d-flex justify-content-between align-items-center px-0">Shipping charge<span>Rs. 90.00</span></li>
+       <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+        <div>
+           <strong>Total</strong> <small>(including VAT)</small>
+         </div>
+         <span><strong>Rs. <strong id="totalamount">{{totalamount}}</strong></strong></span>
+       </li>
+      </ul>
+      <div class="d-grid"><a href="{% url 'checkout' %}" class="btn btn-primary">Place Order</a></div>
+    </div>
+   </div>
+  </div>
+  
+ </div>
+</div>
+<div class="container">
+ <div class="row">
+  <div class="col-sm-8">
+   <div class="card">
+    <div class="card-body">
+      <h5 class="mb-4">We accept</h5>
+      <img src="{% static 'app/images/payment.png' %}" alt="" class="img-fluid">
+    </div>
+  </div>
+  </div>
+ </div>
+</div>
+
+
+<script>
+  function incrementValue()
+{
+    var value = parseInt(document.getElementById('number').value, 1);
+    value = isNaN(value) ? 0 : value;
+    value++;
+    document.getElementById('number').value = value;
+}
+
+function decrementValue()
+{
+    var value = parseInt(document.getElementById('number').value, 1);
+    value = isNaN(value) ? 0 : value;
+    value--;
+    document.getElementById('number').value = value;
+}
+</script>
+{% endblock main-content %}

@@ -1,0 +1,56 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Buy Now{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+ <div class="row">
+ <h3>Hello <span class="text-capitalize">{{user|slice:":5"}}</span></h3>
+  <div class="col-sm-2 border-end">
+   <ul class="list-unstyled">
+    
+    <li class="d-grid"><a href="{% url 'address' %}" class="btn {{active}}">Address</a></li>
+    <li class="d-grid"><a href="{% url 'profile' %}" class="btn btn-primarr">New adress</a></li>
+   </ul>
+  </div>
+  <div class="col-sm-9 offset-sm-1">
+   <div class="row">
+    {% for ad in adress %}
+    <div class="col-sm-6">
+     <div class="card">
+      <div class="card-body">
+       <h3>Address {{forloop.counter}}</h3>
+       <p>Locality: {{ad.locality}}</p>
+       <p>City: {{ad.city}}</p>
+       <p>Pincode: {{ad.pincode}}</p>
+       <p>State: {{ad.state}}</p>
+       <button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal{{ad.id}}">
+        Delete
+      </button>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal{{ad.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this adress!
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <a href="{% url 'delete_adress' %}"><button type="submit" class="btn btn-danger">Delete</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+     </div>
+    </div>
+    {% endfor %}
+   </div>
+  </div>
+ </div>
+</div>
+{% endblock main-content %}

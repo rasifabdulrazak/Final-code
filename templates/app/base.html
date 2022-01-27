@@ -1,0 +1,127 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <!--Owl Carousel CSS-->
+    <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}">
+
+    <!--FontAwesome CSS-->
+    <link rel="stylesheet" href="{% static 'app/css/all.min.css' %}">
+
+    <!-- ........userprofile............ -->
+    <link rel="stylesheet" href="{% static 'app/css/profile.css' %}">
+
+    <!--Custom CSS-->
+    <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+
+    <title>E-shopee | {% block title %} {% endblock title %} </title>
+  </head>
+  <body style="background-color: whitesmoke;">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #243447;">
+     <div class="container">
+      <div class="image"><img src="" alt="" style="width: 3rem; height: auto;"></div>
+       <a class="navbar-brand" href="/"><h1 class="mr-2 mt-1" style="font-weight: bolder;">E-shopee</h1></a>
+       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+       </button>
+       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+         <ul class="navbar-nav me-auto mb-2 mt-2 mb-lg-0">
+           <li class="nav-item">
+             <a class="nav-link active" aria-current="page" href="/"><h5 style="font-weight: bold;">Home</h5></a>
+           </li>
+           <li class="nav-item dropdown">
+             <a class="nav-link dropdown-toggle text-white" href="#" id="electronicsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+               Earphones
+             </a>
+             <ul class="dropdown-menu" aria-labelledby="electronicsDropdown">
+               <li><a class="dropdown-item" href="{% url 'mobile' %}">Wired</a></li>
+               <li><a class="dropdown-item" href="#">Wireless</a></li>
+             </ul>
+           </li>
+           <li class="nav-item dropdown">
+             <a class="nav-link dropdown-toggle text-white" href="#" id="fashionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+               Earpodes
+             </a>
+             <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
+               <li><a class="dropdown-item" href="#">dummy</a></li>
+               <li><a class="dropdown-item" href="#">dummy</a></li>
+             </ul>
+           </li>
+         </ul>
+         <form class="d-flex mt-1">
+           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+           <button class="btn btn-warning" type="submit">Search</button>
+         </form>
+         <div>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if user %}
+           <li class="nav-item dropdown mx-2 mt-1">
+              <a class="nav-link dropdown-toggle text-white" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{user}}
+              </a>
+              
+              <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'address' %}">Adress</a></li>
+                <li><a class="dropdown-item" href="{% url 'orders' %}">Orders</a></li>
+                <li><a class="dropdown-item" href="{% url 'changepassword' %}">Change Password</a></li>
+                <li><a class="dropdown-item" href="{% url 'user_logout' %}">Logout</a></li>
+              </ul>
+              
+           
+            </li>
+            <li class="nav-item mt-1">
+             <a href="{% url 'show_cart' %}" class="nav-link text-white"><span class="badge bg-danger">{{cart_count}}</span> Cart </a>
+            </li>
+          
+            {% else %}
+            <li class="nav-item mx-2 mt-1">
+             <a href="{% url 'user_login' %}" class="nav-link text-white">Login</a>
+            </li>
+            <li class="nav-item mx-2 mt-1">
+             <a href="{% url 'user_registration' %}" class="nav-link text-white">Signup</a>
+            </li>
+            
+            {% endif %}
+          </ul>
+         </div>
+       </div>
+     </div>
+    </nav>
+    {% block banner_slider %} {% endblock banner_slider %}
+    {% block livesale %} {% endblock livesale %}
+    {% block main-content %} {% endblock main-content %}
+    {% block payment-gateway %} {% endblock payment-gateway %}
+
+    <!-- Start Footer -->
+    <footer class="container-fluid text-center p-2 mt-5" style="background: hsl(213, 33%, 21%);">
+        <small class="text-white">Copyright &copy; 2022 || Designed By Eshopee || </small>
+        <img src="{% static 'app/images/payment.png' %}" alt="" srcset="" class="img-fluid" height="2px">
+    </footer> <!-- End Footer -->
+
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <script src="{% static 'app/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'app/js/all.min.js' %}"></script>
+    <script src="{% static 'app/js/myscript.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  </body>
+</html>

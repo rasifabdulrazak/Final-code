@@ -1,0 +1,82 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Buy Now{% endblock title %}
+{% block main-content %}
+<div class="container">
+ <div class="row mt-5">
+  <div class="col-sm-6">
+    <h4>Order Summary</h4>
+    <hr>
+    {% if  product %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <h5>Product: {{product.brand}}</h5>
+          <p>Quantity: {{product.quantity}}</p>
+          <p class="fw-bold">Price: {{product.discounted_price}}</p>
+        </div>
+      </div>
+      {% endif %}
+      <p class="fw-bold">Total amount : {{totalamount}}</p>
+      <hr>
+    <small>Term and Condition:Payment terms are typically associated with invoice payments. They are an agreement that sets your expectations for payment, including when the client needs to pay you and the penalties for missing a payment. Having transparent payment terms can help ensure you get paid and makes it easier for your customers to understand your billing process.</small>
+  </div>
+  <div class="col-sm-4 offset-sm-1">
+    <h4>Select Shipping Address</h4>
+    <hr>
+    <form action="{% url 'cash_on_delivery' %}">
+      {% for add in adress %}
+      <div class="card">
+        <div class="card-body">
+        <h5 class="text-capitalize">{{user}}</h5>
+        <p>{{add.locality}},
+        {{add.city}},
+        {{add.pincode}},
+        {{add.state}}</p>
+        </div>
+      </div>
+        <div class="form-check mt-2 mb-5">
+          <input class="form-check-input" type="radio" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}">
+          <label class="form-check-label fw-bold" for="useradd{{forloop.counter}}">
+            Address: {{forloop.counter}} </label>
+        </div>
+        {% endfor %}
+        Mode of payment: 
+        <div class="text-center">
+          <button type="submit" class="btn btn-warning mt-3 px-5 fw-bold">Paypal</button>
+        </div>
+        <div class="text-center">
+          <!-- Button trigger modal -->
+<button type="button" class="btn btn-warning mt-3 fw-bold" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Cash on delvery
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        By clicking Buy now your order will be placed in cash on delivery mode
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Buy now</button>
+      </div>
+    </div>
+  </div>
+</div>
+        </div>
+        
+      </form>
+      <div>
+        {{message}}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock main-content %}

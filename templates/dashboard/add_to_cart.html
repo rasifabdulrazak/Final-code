@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block extra_css %}
+    <style xmlns="http://www.w3.org/1999/html">
+    </style>
+{% endblock %}
+{% block page_title %}
+ Tables
+{% endblock %}
+{% block content %}
+
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Add to cart</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Library</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron" style="width: auto;">
+       <form action="{% url 'add_to_cart' %}" method="post">
+           {% csrf_token %}
+           {{form|crispy}}
+           <div class="text-center mt-3"> <button type="submit" class="btn btn-primary">Submit</button></div>
+       </form>
+      </div>
+
+
+{% endblock %}

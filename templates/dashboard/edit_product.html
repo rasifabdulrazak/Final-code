@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block extra_css %}
+    <style xmlns="http://www.w3.org/1999/html">
+    </style>
+{% endblock %}
+{% block page_title %}
+ Tables
+{% endblock %}
+{% block content %}
+
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Edit Product</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Library</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron" style="width: auto;">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.title|as_crispy_field}}
+            <div class="row">
+                <div class="col-md-6">
+                    {{form.selling_price|as_crispy_field}}
+                </div>
+                <div class="col-md-6">
+                    {{form.discounted_price|as_crispy_field}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{form.description|as_crispy_field}}
+                </div>
+                <div class="col-md-6">
+                    {{form.brand|as_crispy_field}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    {{form.color|as_crispy_field}}
+                </div>
+                <div class="col-md-3">
+                    {{form.category|as_crispy_field}}
+                </div>
+                <div class="col-md-3">
+                    {{form.image|as_crispy_field}}
+                </div>
+                <div class="col-md-3">
+                    {{form.stock|as_crispy_field}}
+                </div>
+            </div>
+
+           <div class="text-center mt-3"> <button type="submit" class="btn btn-primary">Submit</button></div>
+            </form>
+      </div>
+
+
+{% endblock %}
