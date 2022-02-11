@@ -1,6 +1,7 @@
 from django.db import models
 from django import forms
 from django.contrib.auth.models import User,AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator 
 # from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -16,6 +17,7 @@ class CustomUser(AbstractUser):
 # ..............Table for category.............
 class Category(models.Model):
     name = models.CharField(max_length=100,unique=True)
+    category_offer = models.IntegerField(default=0,null=True,blank=True)
     
     def __str__(self):
         return self.name
@@ -25,13 +27,14 @@ class Category(models.Model):
 # .............Table for products.................
 class Products(models.Model):
     title = models.CharField(max_length = 100)
-    selling_price = models.FloatField()
-    discounted_price = models.FloatField()
+    selling_price = models.IntegerField()
+    discounted_price = models.IntegerField(null=True,blank=True)
     description = models.TextField()
     brand = models.CharField(max_length = 100)
     color = models.CharField(max_length = 100)
     category = models.ForeignKey(Category, on_delete=models.CASCADE,null=True)
     image = models.ImageField(upload_to="product_image/",null=False, blank=False)
+    product_offer = models.IntegerField(default=0,null=True,blank=True)
     stock = models.IntegerField(default=0)
 
     def __str__(self):
@@ -61,7 +64,7 @@ STATE_CHOICES =(
     ("westbengal", "westbengal"),
 )
 class User_details(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL,null=True)
     locality =  models.CharField(max_length = 100)
     city = models.CharField(max_length = 100)
     pincode = models.IntegerField()
@@ -77,14 +80,33 @@ STATUS_CHOICES = {
 
 }
 
+
+# ..............Table for coupon offer..................
+class Coupon(models.Model):
+    coupen_code = models.CharField(max_length = 6,unique=True)
+    discount = models.IntegerField(default = 0)
+
+
+
+
+# ...............Table for saving order details.......................
 class order_placed(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
     adress = models.ForeignKey(User_details, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     orderdate = models.DateTimeField(auto_now_add=True)
-    status =models.CharField(choices=STATUS_CHOICES,max_length=100,default='pending')
+    status = models.CharField(choices=STATUS_CHOICES,max_length=100,default='pending')
+    sub_total = models.BigIntegerField(null=True)
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL,null=True)
+    mode_of_payment = models.CharField(max_length = 50,null=True)
+    
+
 
     @property
     def total_cost(self):
         return self.quantity * self.product.discounted_price
+
+
+
+

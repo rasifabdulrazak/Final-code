@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="/DataTables/datatables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/DataTables/datatables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <table id="table_id" class="display">
+        <thead>
+            <tr>
+                <th scope="col" class="font-weight-bold">User</th>
+                <th scope="col" class="font-weight-bold">Product</th>
+                <th scope="col" class="font-weight-bold">Brand</th>
+                <th scope="col" class="font-weight-bold">Quantity</th>
+                <th scope="col" class="font-weight-bold">Price</th>
+                <th scope="col" class="font-weight-bold">Adress</th>
+                <th scope="col" class="font-weight-bold">Date</th>
+                <th scope="col" class="font-weight-bold">Status</th>
+                <th scope="col" class="font-weight-bold">Edit status</th>
+            </tr>
+        </thead>
+        <tbody class="customtable">
+            {% for order in orders %}
+        <tr>
+            <td>{{order.user.username}}</td>
+            <td> <img src="{{order.product.image.url}}" alt="" height="50" width="50"> </td>
+            <td>{{order.product.brand}}</td>
+            <td>{{order.quantity}}</td>
+            <td>{{order.total_cost}}</td>
+            <td>{{order.adress.locality}},{{order.adress.city}},{{order.adress.pincode}},{{order.adress.state}}</td>
+            <td>{{order.orderdate}}</td>
+            <td>{{order.status}}</td>
+            <td><a href="{% url 'edit_status' order.id %}"><button type="submit" class="btn btn-primary">Edit</button></a></td>
+           
+            
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+    $('#example').DataTable();
+} );
+    </script>
+</body>
+</html>

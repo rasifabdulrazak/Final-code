@@ -41,6 +41,14 @@
             <link href="{% static 'dashboard/css/style.min.css' %}" rel="stylesheet"/>
             <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet"/>
             <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+            <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+            <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+            <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+            <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css"> -->
 
     <!-- HTML5 Shim and Respond.js' %} IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js' %} doesn't work if you view the page via file:// -->
@@ -126,12 +134,15 @@
         <script src="{% static 'dashboard/constant/strings.js' %}"></script>
         <script src="{% static 'dashboard/constant/validator.js' %}"></script>
         <script src="{% static 'dashboard/js/main.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+       
 
-        <script>
-            $(document).ready(function () {
-                $('#example').DataTable();
-            });
-        </script>
+
         <script>
             $(document).ready(function () {
                 $('#zero_config').DataTable();

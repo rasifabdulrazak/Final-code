@@ -1,7 +1,9 @@
 from django.urls import path
 from dashboard import views
+from dashboard import salesreport
 
 urlpatterns = [
+    
     path('admin_login/',views.admin_login,name='admin_login'),
     path('admin_dashboard/',views.admin_dashboard,name='admin_dashboard'),
     path('user_management/',views.user_management,name='user_management'),
@@ -19,4 +21,15 @@ urlpatterns = [
     path('order_management/',views.order_management,name = 'order_management'),
     path('edit_status/<int:pk>',views.edit_status,name = 'edit_status'),
     path('admin_logout/',views.admin_logout,name='admin_logout'),
+    path('datatable/',views.datatable,name='datatable'),
+    path('sales_report/',salesreport.sales_report,name='sales_report'),
+    path('product_offer/',views.product_offer,name='product-offer'),
+    path('remove_prod_offer/<int:pk>/',views.remove_product_offer,name='remove_prod_offer'),
+    path('category_offer/',views.category_offer,name='category-offer'),
+    path('remove_cat_offer/<int:pk>/',views.remove_category_offer,name='remove_cat_offer'),
+    path('coupon/',views.coupen,name='coupon'),
+    path('delete_coupon/<int:pk>',views.delete_coupon,name='delete-coupon'),
+    path('export_to_csv/',salesreport.export_to_csv,name='export_to_csv'),
+    path('export_to_excel/',salesreport.export_to_excel,name='export_to_excel'),
+   
 ]

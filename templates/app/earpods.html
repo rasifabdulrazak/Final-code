@@ -1,0 +1,73 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Buy Now{% endblock title %}
+{% block main-content %}
+<div class="container-fluid my-5">
+ <div class="row">
+  <div class="col-sm-2">
+   <div class="list-group">
+    <p class="fw-bold">Brand:</p> 
+       <a href="{% url 'earpodes_data' 'Boat' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>Boat</h5></a>
+       <a href="{% url 'earpodes_data' 'Mivi' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>Mivi</h5></a>
+       <a href="{% url 'earpodes_data' 'Apple' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>Apple</h5></a>
+      <p class="fw-bold">Color:</p> 
+       <a href="{% url 'earpodes_data' 'Black' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>Black</h5></a>
+       <a href="{% url 'earpodes_data' 'Red' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>Red</h5></a>
+       <a href="{% url 'earpodes_data' 'White' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>White</h5></a>
+       <p class="fw-bold">Price:</p>
+       <a href="{% url 'earpodes_data' 'below' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>Below 5000</h5></a>
+       <a href="{% url 'earpodes_data' 'between' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>5000-10000</h5></a>
+       <a href="{% url 'earpodes_data' 'above' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>Above 10000</h5></a>
+   </div>
+  </div>
+   <div class="col-sm-8 col-12 offset-sm-1">
+    {% if products %}
+    <div class="row my-3">
+      {% for product in products %}
+      <div class="col-md-3 ml-5 mt-2">
+        
+        <div class="card shadow-lg ml-2 mt-2" style="width: 16rem; height:auto; background-color: whitesmoke;">
+          <a href="{% url 'product_detail' product.id %}">
+            <div class="inner align-items-center p-3">
+            <img class="card-img-top img-fluid" src="{{product.image.url}}" alt="Card image cap" style="height: 12rem;  width: 16rem;">
+          </div>
+          </a>
+          <div class="card-body">
+            <h5 class="card-title" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{product.title}}</h5>
+            <span><p class="card-text">{{product.color}} , {{product.category}}</p></span>
+            <p style="color: gray;">({{product.stock}}) {% if product.product_offer > 0 or product.category.category_offer > 0 %}  {% if product.product_offer > product.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{product.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 97, 0);">{{product.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
+            <p style="color: rgb(0, 0, 0);  font-weight: bold;"> ₹{{product.discounted_price}}<span style="color: rgb(106, 106, 106);">{% if product.product_offer > 0 or product.category.category_offer > 0 %}|<strike>₹{{product.selling_price}}{% endif %}</span></strike> <p></p></p>
+            <a href="{% url 'product_detail' product.id %}"><button type="submit" class="btn btn-primary shadow-lg">View details</button></a> 
+          </div>
+        </div>
+        
+      </div>
+     {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center">
+      <div>
+        <img src="{% static 'app/images/no_product_5.png' %}" alt="" width="100%" height="100%">
+      </div>
+    </div>
+    {% endif %}
+  <hr>
+
+   </div>
+ </div>
+</div>
+
+<style>
+  .inner{
+   overflow: hidden;
+}
+
+.inner img{
+   transition: all 1.2s ease;
+}
+
+.inner:hover img{
+   transform: scale(1.2);
+}
+</style>
+{% endblock main-content %}

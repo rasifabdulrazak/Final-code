@@ -35,9 +35,8 @@
                 <div class="col-md-6">
                     {{form.selling_price|as_crispy_field}}
                 </div>
-                <div class="col-md-6">
-                    {{form.discounted_price|as_crispy_field}}
-                </div>
+                <input type="hidden" name="discounted_price" value="0">
+                <input type="hidden" name="product_offer" value="0">
             </div>
             <div class="row">
                 <div class="col-md-6">

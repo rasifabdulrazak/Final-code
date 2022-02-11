@@ -25,7 +25,6 @@ $('#slider1, #slider2, #slider3').owlCarousel({
 $('.plus-cart').click(function(){
     var id = $(this).attr("pid").toString();
     var eml = this.parentNode.children[2]
-    console.log(id)
     $.ajax({
         type : "GET",
         url : "/plus_cart",
@@ -33,8 +32,6 @@ $('.plus-cart').click(function(){
             product_id : id
         },
         success : function(data){
-            console.log(data)
-            console.log("Success")
             eml.innerText = data.quantity
             document.getElementById("amount").innerText = data.amount
             document.getElementById("totalamount").innerText = data.total_amount
@@ -54,8 +51,6 @@ $('.minus-cart').click(function(){
             product_id : id
         },
         success : function(data){
-            console.log(data)
-            console.log("Success")
             eml.innerText = data.quantity
             document.getElementById("amount").innerText = data.amount
             document.getElementById("totalamount").innerText = data.total_amount
@@ -75,8 +70,6 @@ $('.remove-cart').click(function(){
         },
         success : function(data){
             location.reload(true);
-            console.log(data)
-            console.log("Success")
             document.getElementById("amount").innerText = data.amount
             document.getElementById("totalamount").innerText = data.total_amount
             

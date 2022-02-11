@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block extra_css %}
+    <style xmlns="http://www.w3.org/1999/html">
+    </style>
+   
+{% endblock %}
+{% block page_title %}
+ Tables
+{% endblock %}
+{% block content %}
+
+    <div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title">Tables</h4>
+                <div class="ml-auto text-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Library</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-between text-center">
+                        <h5 class="card-title ">Category Offer</h5>
+
+                    </div>
+                    <table class="table" id="example8">
+                        <thead>
+                        <tr>
+                            
+                            <th scope="col"><h5>Category Name</h5></th>
+                            <th scope="col"><h5>Offer in %</h5></th>
+                            <th scope="col"><h5>Set Offer</h5></th>
+                            <th scope="col"><h5>Remove</h5></th>
+                            
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            
+                            {% for category in category %}
+                            <th>{{category.name}}</th>
+                            <th>{{category.category_offer}}%</th>
+                            <th><form action="{% url 'category-offer' %}" method="post"  name="myForm"> 
+                                {% csrf_token %} 
+                                <input type="number" value="0"  min="0" max="100" name="catoffer" style="width: 50px; height: 30px;">
+                                <input type="hidden" value="{{category.id}}" name="id">
+                                <button type="submit" class="btn btn-success" style="border-radius: 5px;">Set</button>
+                            </form>
+                        </th>
+                            <th><a href="{% url 'remove_cat_offer' category.id %}"><button type="submit" class="btn btn-primary">Remove</button></a></th>
+                        
+                        </tr>
+                        {% endfor %}
+                    
+                       
+                      
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#example8').DataTable();
+        } );
+  </script>
+{% endblock %}

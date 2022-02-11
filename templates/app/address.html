@@ -13,6 +13,7 @@
    </ul>
   </div>
   <div class="col-sm-9 offset-sm-1">
+    {% if adress %}
    <div class="row">
     {% for ad in adress %}
     <div class="col-sm-6">
@@ -40,7 +41,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <a href="{% url 'delete_adress' %}"><button type="submit" class="btn btn-danger">Delete</button></a>
+              <a href="{% url 'delete_adress' ad.id %}"><button type="submit" class="btn btn-danger">Delete</button></a>
             </div>
           </div>
         </div>
@@ -50,6 +51,11 @@
     </div>
     {% endfor %}
    </div>
+   {% else %}
+   <div class="text-center">
+    <p class="fw-bold">No adress</p> 
+   </div>
+   {% endif %}
   </div>
  </div>
 </div>

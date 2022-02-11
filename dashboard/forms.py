@@ -50,7 +50,20 @@ class add_cart(forms.ModelForm):
         self.fields['sub_total'].required=True
 
 
+
+# ............form editing order status..............
 class order_status(forms.ModelForm):
     class Meta:
         model = order_placed
         fields = ['status']
+
+
+
+# ...............form for adding coupon......................
+class coupon(forms.ModelForm):
+    coupen_code = forms.CharField(label='Coupen Code',max_length=6,required=True,widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter the Coupon Code'}))
+    discount = forms.IntegerField(label='Discount in %', required=True, widget=forms.TextInput(attrs={'min':1,'max': '100','type': 'number','placeholder':'Enter the Coupon Offer'}))
+    class Meta:
+        model = Coupon
+        labels = {'coupen_code': 'Coupen Code','discount':'Coupen Offer'}
+        fields= ['coupen_code','discount']

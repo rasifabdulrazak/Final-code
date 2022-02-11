@@ -19,13 +19,14 @@
     <link rel="stylesheet" href="{% static 'app/css/profile.css' %}">
 
     <!--Custom CSS-->
-    <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    
 
     <title>E-shopee | {% block title %} {% endblock title %} </title>
   </head>
@@ -44,14 +45,15 @@
            </li>
            <li class="nav-item dropdown">
              <a class="nav-link dropdown-toggle text-white" href="#" id="electronicsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-               Earphones
+               Products
              </a>
              <ul class="dropdown-menu" aria-labelledby="electronicsDropdown">
-               <li><a class="dropdown-item" href="{% url 'mobile' %}">Wired</a></li>
-               <li><a class="dropdown-item" href="#">Wireless</a></li>
+               <li><a class="dropdown-item" href="{% url 'wired' %}">Wired Headphones</a></li>
+               <li><a class="dropdown-item" href="{% url 'bluetooth' %}">Bluetooth Headphones</a></li>
+               <li><a class="dropdown-item" href="{% url 'earpodes' %}">Earpodes</a></li>
              </ul>
            </li>
-           <li class="nav-item dropdown">
+           <!-- <li class="nav-item dropdown">
              <a class="nav-link dropdown-toggle text-white" href="#" id="fashionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                Earpodes
              </a>
@@ -59,10 +61,11 @@
                <li><a class="dropdown-item" href="#">dummy</a></li>
                <li><a class="dropdown-item" href="#">dummy</a></li>
              </ul>
-           </li>
+           </li> -->
          </ul>
-         <form class="d-flex mt-1">
-           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+         <form class="d-flex mt-1" method="post" action="{% url 'search' %}">
+           {% csrf_token %}
+           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
            <button class="btn btn-warning" type="submit">Search</button>
          </form>
          <div>
@@ -77,7 +80,6 @@
                 <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
                 <li><a class="dropdown-item" href="{% url 'address' %}">Adress</a></li>
                 <li><a class="dropdown-item" href="{% url 'orders' %}">Orders</a></li>
-                <li><a class="dropdown-item" href="{% url 'changepassword' %}">Change Password</a></li>
                 <li><a class="dropdown-item" href="{% url 'user_logout' %}">Logout</a></li>
               </ul>
               
@@ -107,12 +109,33 @@
     {% block payment-gateway %} {% endblock payment-gateway %}
 
     <!-- Start Footer -->
-    <footer class="container-fluid text-center p-2 mt-5" style="background: hsl(213, 33%, 21%);">
+    <footer class="container-fluid text-center mt-5" style="background: hsl(213, 33%, 21%);">
         <small class="text-white">Copyright &copy; 2022 || Designed By Eshopee || </small>
         <img src="{% static 'app/images/payment.png' %}" alt="" srcset="" class="img-fluid" height="2px">
+        <div class="row mt-2">
+          <div class="col-md-4">
+            <h6 class="fw-bold text-center" style="color: rgb(255, 255, 255);">Services Provided</h6>
+            <p class="text-center" style="color: rgb(104, 104, 104);">Online Shopping</p>
+            <p class="text-center" style="color: rgb(121, 121, 121);">No EMI Cost</p>
+            <p class="text-center" style="color: rgb(128, 128, 128);">Attracting Offers</p>
+          </div>
+          <div class="col-md-4">
+            <h6 class="fw-bold text-center" style="color: rgb(255, 255, 255);">Payment Options</h6>
+            <p class="text-center" style="color: rgb(104, 104, 104);">Cash On Delivery</p>
+            <p class="text-center" style="color: rgb(121, 121, 121);">Razorpay</p>
+            <p class="text-center" style="color: rgb(128, 128, 128);">Paypal</p>
+          </div>
+          <div class="col-md-4">
+            <h6 class="fw-bold text-center" style="color: rgb(255, 255, 255);">Contact Us</h6>
+            <p class="text-center" style="color: rgb(104, 104, 104);">Watsapp: +91 9744088812</p>
+            <p class="text-center" style="color: rgb(121, 121, 121);">Facebook</p>
+            <p class="text-center" style="color: rgb(128, 128, 128);">Instagram</p>
+          </div>
+        </div>
     </footer> <!-- End Footer -->
 
     <!-- Jquery -->
+    
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
@@ -120,8 +143,14 @@
     <script src="{% static 'app/js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'app/js/all.min.js' %}"></script>
     <script src="{% static 'app/js/myscript.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{% static 'app/js/zoomer.js' %}"></script>
+    <script src="{% static 'app/js/elevate.js' %}"></script>
+
+
   </body>
 </html>

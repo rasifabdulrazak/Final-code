@@ -40,3 +40,11 @@ class User_detail(forms.ModelForm):
             'pincode': forms.NumberInput(attrs= {'class':'form-control'}),
             'state': forms.Select(attrs= {'class':'form-control'})
         }
+
+# ........form for editing users................
+class edit_user(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name','last_name','email']
+
+

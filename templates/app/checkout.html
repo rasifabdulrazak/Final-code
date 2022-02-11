@@ -2,12 +2,13 @@
 {% load static %}
 {% block title %}Buy Now{% endblock title %}
 {% block main-content %}
+<div>
 <div class="container">
- <div class="row mt-5">
-  <div class="col-sm-6">
-    <h4>Order Summary</h4>
-    <hr>
-    {% for item in cart_item %}
+  <div class="row mt-5">
+    <div class="col-sm-6">
+      <h4>Order Summary</h4>
+      <hr>
+      {% for item in cart_item %}
       <div class="card mb-2">
         <div class="card-body">
           <h5>Product: {{item.products.brand}}</h5>
@@ -17,81 +18,127 @@
       </div>
       {% endfor %}
       <p class="fw-bold">Total amount : {{totalamount}}</p>
+      <div class="border col-md-6">
+        <p>Enter the Coupon Code:</p>
+        <form action="{% url 'checkout' %}" method="get" onsubmit="return validateForm()" name="myForm">
+          {% csrf_token %}
+          {% if message %}
+          <div class="alert alert-success">{{message}}</div>
+          {% endif %}
+          {% if codes %}
+         {% for code in codes %}
+         <p>{{code.coupen_code}}</p>
+         {% endfor %}
+         {% else %}
+         <p>No coupons found</p>
+         {% endif %}
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Enter code" name="couponcode">
+              <div class="input-group-append ml-2 form-group">
+                <button class="btn btn-primary" type="submit">Apply</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
       <hr>
-    <small>Term and Condition:Payment terms are typically associated with invoice payments. They are an agreement that sets your expectations for payment, including when the client needs to pay you and the penalties for missing a payment. Having transparent payment terms can help ensure you get paid and makes it easier for your customers to understand your billing process.</small>
-  </div>
-  <div class="col-sm-4 offset-sm-1">
-    <h4>Select Shipping Address</h4>
-    <hr>
-    <form action="{% url 'payment' %}" id="myform" >
+      <small>Term and Condition:Payment terms are typically associated with invoice payments. They are an agreement that
+        sets your expectations for payment, including when the client needs to pay you and the penalties for missing a
+        payment. Having transparent payment terms can help ensure you get paid and makes it easier for your customers to
+        understand your billing process.</small>
+    </div>
+    <div class="col-sm-4 offset-sm-1">
+      <h4>Select Shipping Address</h4>
+      <hr>
       {% for add in adress %}
       <div class="card">
         <div class="card-body">
-        <h5 class="text-capitalize">{{user}}</h5>
-        <p>{{add.locality}},
-        {{add.city}},
-        {{add.pincode}},
-        {{add.state}}</p>
+          <h5 class="text-capitalize">{{user}}</h5>
+          <p>{{add.locality}},
+            {{add.city}},
+            {{add.pincode}},
+            {{add.state}}</p>
         </div>
-      </div>
+        </div>
+        <form action="{% url 'payment' 1 %}">
+          {% csrf_token %}
         <div class="form-check mt-2 mb-5">
-          <input class="form-check-input" type="radio" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}">
+          <input class="form-check-input" type="radio" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}" >
           <label class="form-check-label fw-bold" for="useradd{{forloop.counter}}">
             Address: {{forloop.counter}} </label>
         </div>
-        {% endfor %}
-        Mode of payment: 
-        <div class="btn_container text-center mt-3">
-          <!-- Payment Button -->
-          <button class="btn btn-success" id="pay-btn">Pay With Razorpay</button>
-        </div>
-        <div class="text-center mt-3">
-          <div id="paypal-button-container"></div>
-        </div>
-        <div class="text-center">
+      {% endfor %}
+        Mode of payment:
+        <div class="text-center mt-2">
           <!-- Button trigger modal -->
-<button type="button" class="btn btn-warning mt-3 fw-bold" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Cash on delvery
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        By clicking Buy now your order will be placed in cash on delivery mode
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Buy now</button>
-      </div>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Cash on deliver
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Are you sure...for cash on deliver of Rs {{totalamount}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <a href=""><button type="submit" class="btn btn-primary">Buy</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+      </form>
     </div>
-  </div>
-</div>
+    <div class="text-center  mt-2">
+      <form action="{% url 'payment' 2 %}">
+        {% csrf_token %}
+        <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="rzp_test_az3fn8j9AYBZwn" data-amount="{{amount}}"
+          data-currency="INR" data-order_id="{{payment.id}}" . data-buttontext="Pay with Razorpay" data-name="Eshopee"
+          data-description="Explore your online shoping"
+          data-image="https://example.com/your_logo.jpg" data-prefill.name="{{user.username}}"
+          data-prefill.email="{{user.email}}" data-theme.color="#F37254"></script>
+          {% for add in adress %}
+          <input class="form-check-input" type="hidden" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}" >
+        <input type="hidden" custom="Hidden Element" name="hidden">
+        {% endfor %}
+      </form>
+
+      <form action="{% url 'payment' 3 %}" id="myform">
+        {% csrf_token %}
+        {% for add in adress %}
+        <div class="text-center mt-3">
+          <div id="paypal-button-container"><input class="form-check-input" type="hidden" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}" ></div>
         </div>
-        
+        {% endfor %}
       </form>
       <div>
-        {{message}}
       </div>
     </div>
   </div>
 </div>
 
-
+</div>
 {% endblock main-content %}
-{% block payment-gateway %} 
+{% block payment-gateway %}
 
-    <!-- Include the PayPal JavaScript SDK; replace "test" with your own sandbox Business account app client ID -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AZqjoutdLjQ6y3ApdLOrkvKcNtW8bUHav8qqV4p5PblHG4JZXM1vetrTw3ISt2C54-ZhfwHnNe36AxeX&currency=USD"></script>
+<!-- Include the PayPal JavaScript SDK; replace "test" with your own sandbox Business account app client ID -->
+<script
+  src="https://www.paypal.com/sdk/js?client-id=AZqjoutdLjQ6y3ApdLOrkvKcNtW8bUHav8qqV4p5PblHG4JZXM1vetrTw3ISt2C54-ZhfwHnNe36AxeX&currency=USD">
+</script>
 <script>
   paypal.Buttons({
 
     // Sets up the transaction when a payment button is clicked
-    createOrder: function(data, actions) {
+    createOrder: function (data, actions) {
       return actions.order.create({
         purchase_units: [{
           amount: {
@@ -102,13 +149,14 @@
     },
 
     // Finalize the transaction after payer approval
-    onApprove: function(data, actions) {
-      return actions.order.capture().then(function(orderData) {
+    onApprove: function (data, actions) {
+      return actions.order.capture().then(function (orderData) {
         // Successful capture! For dev/demo purposes:
-            console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-            var transaction = orderData.purchase_units[0].payments.captures[0];
-            alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
-            document.getElementById("myform").submit();
+        console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+        var transaction = orderData.purchase_units[0].payments.captures[0];
+        alert('Transaction ' + transaction.status + ': ' + transaction.id +
+          '\n\nSee console for all available details');
+        document.getElementById("myform").submit();
 
         // When ready to go live, remove the alert and show a success message within this page. For example:
         // var element = document.getElementById('paypal-button-container');
@@ -118,7 +166,22 @@
       });
     }
   }).render('#paypal-button-container');
+</script>
 
+<script>
+  function setVal(id){
+     document.getElementById("add-id").value = id
+     alert("UUUUUUUUUU")
+    
+  }
+
+  function validateForm() {
+  let x = document.forms["myForm"]["couponcode"].value;
+  if (x == "") {
+    Swal.fire('Please Fill out the Field')
+    return false;
+  }
+}
 </script>
 
 {% endblock payment-gateway %}
