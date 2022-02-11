@@ -72,6 +72,7 @@
       {% endfor %}
       {% else %}
       <div>Please create an adress</div>
+      {% endif %}
         Mode of payment:
         <div class="text-center mt-2">
           <!-- Button trigger modal -->
@@ -110,7 +111,7 @@
           data-image="https://example.com/your_logo.jpg" data-prefill.name="{{user.username}}"
           data-prefill.email="{{user.email}}" data-theme.color="#F37254"></script>
           {% for add in adress %}
-          <input class="form-check-input" type="hidden" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}" >
+          <input class="form-check-input" type="hidden" name="mustid" value="{{add.id}}" id="custadd{{forloop.counter}}" >
         <input type="hidden" custom="Hidden Element" name="hidden">
         {% endfor %}
       </form>
@@ -119,7 +120,7 @@
         {% csrf_token %}
         {% for add in adress %}
         <div class="text-center mt-3">
-          <div id="paypal-button-container"><input class="form-check-input" type="hidden" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}" ></div>
+          <div id="paypal-button-container"><input class="form-check-input" type="hidden" name="tustid" value="{{add.id}}" id="custadd{{forloop.counter}}" ></div>
         </div>
         {% endfor %}
       </form>
@@ -186,11 +187,7 @@
   }
 }
 
-function check(){
-  $('input[name="custid"]').prop('checked', false);
-  Swal.fire('Please select an adress')
-  return false;
-}
+
 </script>
 
 {% endblock payment-gateway %}

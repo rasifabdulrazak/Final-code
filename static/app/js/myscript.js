@@ -32,10 +32,16 @@ $('.plus-cart').click(function(){
             product_id : id
         },
         success : function(data){
-            eml.innerText = data.quantity
-            document.getElementById("amount").innerText = data.amount
-            document.getElementById("totalamount").innerText = data.total_amount
-
+            if (data.flag == 0){
+                swal("Error deleting!", "Please try again", "error");
+            }
+            else{
+                eml.innerText = data.quantity
+                document.getElementById("amount").innerText = data.amount
+                document.getElementById("totalamount").innerText = data.total_amount
+            }
+            
+            
         }
     })
 })

@@ -59,8 +59,9 @@ def payment(request,mode):
             if request.session.has_key('coupon'):
                 couponcode = Coupon.objects.get(coupen_code=request.session['coupon'])
                 for cart in cart:
-                    sum = cart.quantity*cart.products.discounted_price
-                    orders = order_placed(user = newuser,adress = adress,product = cart.products,quantity = cart.quantity,sub_total = sum,mode_of_payment=mode_of_payment[mode],coupon=couponcode)
+                    sub = cart.quantity*cart.products.discounted_price + 90
+                    total = sub - (sub*couponcode.discount/100)
+                    orders = order_placed(user = newuser,adress = adress,product = cart.products,quantity = cart.quantity,sub_total = total,mode_of_payment=mode_of_payment[mode],coupon=couponcode)
                     orders.save()
                     cart.delete()
                     c = cart.products.stock - cart.quantity
@@ -97,21 +98,18 @@ def buy_now_payment(request,mode,pk):
             mode = int(mode)
             adress = User_details.objects.get(id = custid)
             product = Products.objects.get(pk = pk)
-            print(product.brand)
             totalamount = product.discounted_price + 90
             if request.session.has_key('buycoupon'):
                 couponcode = Coupon.objects.get(coupen_code=request.session['buycoupon'])
                 orders = order_placed(user = newuser,adress = adress,product = product,quantity = 1,sub_total = totalamount,mode_of_payment=mode_of_payment[mode],coupon=couponcode)
                 orders.save()
                 c = product.stock - 1
-                print(c)
                 Products.objects.filter(title=product.title).update(stock = c)
                 del request.session['buycoupon']
                 return redirect('orders')
             else:
                 orders = order_placed(user = newuser,adress = adress,product = product,quantity = 1,sub_total = totalamount,mode_of_payment=mode_of_payment[mode])
                 orders.save()
-                print(c)
                 c = product.stock - 1
                 Products.objects.filter(title=product.title).update(stock = c)
                 return redirect('orders')
@@ -286,22 +284,25 @@ def plus_cart(request):
             product_id = request.GET['product_id']
             product = Products.objects.all()
             cart = Cart_details.objects.get(Q(products = product_id) & Q(user = newuser))
-            cart.quantity += 1
-            if cart.quantity == cart.products.stock:
-                cart.quantity = breakpoint()
-            cart.save()
-            amount = 0.0
-            shipping_amount = 90.0
-            cart_product = [p for p in Cart_details.objects.all() if p.user == newuser ]
-            for p in cart_product:
-                tempamount = (p.quantity * p.products.discounted_price)
-                amount += tempamount
-                total_amount = amount + shipping_amount
+            if cart.quantity < cart.products.stock:
+                cart.quantity += 1
+                flag=1
+                cart.save()
+                amount = 0.0
+                shipping_amount = 90.0
+                cart_product = [p for p in Cart_details.objects.all() if p.user == newuser ]
+                for p in cart_product:
+                    tempamount = (p.quantity * p.products.discounted_price)
+                    amount += tempamount
+                    total_amount = amount + shipping_amount
+            else:
+                flag = 0
             data = {
                 'tempamount' : tempamount,
                 'quantity' : cart.quantity,
                 'amount' : amount,
                 'total_amount' : total_amount,
+                'flag': flag,
                 }
             return JsonResponse(data)
     else:

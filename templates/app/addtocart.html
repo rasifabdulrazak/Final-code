@@ -17,9 +17,6 @@
        <p class="mb-2 text-muted small">{{prod.products.title}}</p>
        <p class="mb-2 text-muted small">color: {{prod.products.color}}</p>
        <div class="my-3">
-         {% if prod.quantity == prod.products.stock %}
-         <div class="alert">Limit</div>
-         {% endif %}
         <label for="quantity">Quantity:</label>
         <a class="minus-cart btn" onclick="" pid = "{{prod.products.id}}" ><i class="fas fa-minus-square fa-lg"></i></a>
           <span id="quantity" min="1">{{prod.quantity}}</span>
