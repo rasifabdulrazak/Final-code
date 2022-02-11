@@ -47,4 +47,3 @@ class edit_user(forms.ModelForm):
         model = CustomUser
         fields = ['first_name','last_name','email']
 
-

@@ -36,9 +36,8 @@ def user_profile(request):
         user = request.session['user']
         newuser =  CustomUser.objects.get(username = user)
         adress = User_details.objects.filter(user = newuser)
-        form = edit_user(request.POST)
         cart_count = len(Cart_details.objects.filter(user = newuser))
-        return render(request,'app/userprofile.html',{'user':newuser,'adress':adress,'cart_count':cart_count,'form':form})
+        return render(request,'app/userprofile.html',{'user':newuser,'adress':adress,'cart_count':cart_count})
     else:
         return redirect('user_login')
 
@@ -64,14 +63,20 @@ def payment(request,mode):
                     orders = order_placed(user = newuser,adress = adress,product = cart.products,quantity = cart.quantity,sub_total = sum,mode_of_payment=mode_of_payment[mode],coupon=couponcode)
                     orders.save()
                     cart.delete()
+                    c = cart.products.stock - cart.quantity
+                    product = cart.products
+                    Products.objects.filter(title = cart.products).update(stock = c)
                     del request.session['coupon']
                 return redirect('orders')
             else:
                 for cart in cart:
-                    sum = cart.quantity*cart.products.discounted_price
+                    sum = int(cart.quantity*cart.products.discounted_price)
                     orders = order_placed(user = newuser,adress = adress,product = cart.products,quantity = cart.quantity,sub_total = sum,mode_of_payment=mode_of_payment[mode])
                     orders.save()
                     cart.delete()
+                    c = cart.products.stock - cart.quantity
+                    product = cart.products
+                    Products.objects.filter(title = cart.products).update(stock = c)
                 return redirect('orders')
         except:
             return redirect('checkout')
@@ -92,15 +97,23 @@ def buy_now_payment(request,mode,pk):
             mode = int(mode)
             adress = User_details.objects.get(id = custid)
             product = Products.objects.get(pk = pk)
+            print(product.brand)
             totalamount = product.discounted_price + 90
             if request.session.has_key('buycoupon'):
                 couponcode = Coupon.objects.get(coupen_code=request.session['buycoupon'])
                 orders = order_placed(user = newuser,adress = adress,product = product,quantity = 1,sub_total = totalamount,mode_of_payment=mode_of_payment[mode],coupon=couponcode)
                 orders.save()
+                c = product.stock - 1
+                print(c)
+                Products.objects.filter(title=product.title).update(stock = c)
+                del request.session['buycoupon']
                 return redirect('orders')
             else:
                 orders = order_placed(user = newuser,adress = adress,product = product,quantity = 1,sub_total = totalamount,mode_of_payment=mode_of_payment[mode])
                 orders.save()
+                print(c)
+                c = product.stock - 1
+                Products.objects.filter(title=product.title).update(stock = c)
                 return redirect('orders')
         except:
             return redirect('buynow')
@@ -406,7 +419,7 @@ def buy_now(request,pk):
 # ..............USER ADRESS ADDING PAGE....................
 @never_cache
 def profile(request):
-    form = User_detail(request.POST or None)
+    form = User_detail(request.POST or None,request.FILES or None)
     if request.session.has_key('user'):
         user = request.session['user']
         newuser =  CustomUser.objects.get(username = user)
@@ -466,7 +479,12 @@ def orders(request):
         newuser =  CustomUser.objects.get(username = user)
         cart_count = len(Cart_details.objects.filter(user = newuser))
         orders = order_placed.objects.filter(user = newuser).order_by('-orderdate')
-        return render(request, 'app/orders.html',{'user':user,'orders':orders,'cart_count':cart_count})
+        context = {
+            'user':user,
+            'orders':orders,
+            'cart_count':cart_count
+            }
+        return render(request, 'app/orders.html',context)
     else:
         return redirect('user_login')
 
@@ -618,7 +636,7 @@ def checkout(request):
                 request.session['coupon'] = code.coupen_code
                 message = "Coupon Applied you have got "+str(code.discount)+" % off"
         DATA = {
-            "amount": int((total_amount)*100),
+            "amount": int(total_amount)*100,
             "currency": "INR",
             "receipt": "receipt#1",
             "payment_capture": 1

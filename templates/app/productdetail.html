@@ -44,11 +44,17 @@
    
     {% if item_in_cart %}
      <a href="{% url 'show_cart' %}"><button type="submit" class="btn btn-secondary shadow-lg">Go to cart</button></a>
+     {% elif product.stock == 0 %}
+     <a href=""><button type="submit" class="btn btn-secondary shadow-lg">Out of stock</button></a>
     {% else %}
      <a href="{% url 'add_to_cart' product.id %}"><button type="submit" class="btn btn-primary shadow-lg">Add to cart</button></a>
     {% endif %}
   
+    {% if product.stock == 0 %}
+  <input type="hidden" class="btn btn-secondary" disabled value="Out of stock">
+   {% else %}
    <a href="{% url 'buynow' product.id %}" class="btn btn-danger shadow-lg">Buy Now</a>
+   {% endif %}
    <h5 class="mt-5">Available Offers</h5>
    <ul>
      {% if product.product_offer > 0 or product.category.category_offer > 0 %}

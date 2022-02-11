@@ -69,6 +69,7 @@ class User_details(models.Model):
     city = models.CharField(max_length = 100)
     pincode = models.IntegerField()
     state = models.CharField(choices=STATE_CHOICES,max_length=100)
+ 
 
 STATUS_CHOICES = {
     ("Accepted" , "Accepted"),

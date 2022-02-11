@@ -61,7 +61,7 @@
     <div class="card-body">
       <h5 class="card-title" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{wired.title}}</h5>
       <span><p class="card-text">{{wired.color}} , {{wired.category}}</p></span>
-      <p style="color: gray;">({{wired.stock}}) {% if wired.product_offer > 0 or wired.category.category_offer > 0 %} {% if wired.product_offer > wired.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{wired.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 97, 0);">{{wired.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
+      <p style="color: gray;">{% if wired.stock == 0 %}(No stock){% else %}({{wired.stock}}){% endif %} {% if wired.product_offer > 0 or wired.category.category_offer > 0 %} {% if wired.product_offer > wired.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{wired.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 97, 0);">{{wired.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
       <p style="color: rgb(0, 0, 0);  font-weight: bold;"> ₹{{wired.discounted_price}}<span style="color: rgb(106, 106, 106);">{% if wired.product_offer > 0 or wired.category.category_offer > 0 %}|<strike>₹{{wired.selling_price}}{% endif %}</span></strike> <p></p></p>
       <a href="{% url 'product_detail' wired.id %}"><button type="submit" class="btn btn-primary shadow-lg">View details</button></a> 
     </div>

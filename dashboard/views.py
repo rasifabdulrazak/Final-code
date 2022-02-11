@@ -186,6 +186,11 @@ def edit_product(request,pk):
             form = edit_products(request.POST,request.FILES,instance = product)
             if form.is_valid():
                 form.save()
+                selling_price = request.POST['selling_price']
+                disc_price = request.POST['discounted_price']
+                offer = request.POST['product_offer']
+                discounted_price = (int(selling_price) - (int(selling_price) * int(offer) / 100))
+                Products.objects.filter(title=product.title).update(discounted_price=discounted_price)
                 return redirect('/product_management/')
         else:
             form = edit_products(instance = product)

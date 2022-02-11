@@ -51,6 +51,7 @@
     <div class="col-sm-4 offset-sm-1">
       <h4>Select Shipping Address</h4>
       <hr>
+      {% if adress %}
       {% for add in adress %}
       <div class="card">
         <div class="card-body">
@@ -69,11 +70,13 @@
             Address: {{forloop.counter}} </label>
         </div>
       {% endfor %}
+      {% else %}
+      <div>Please create an adress</div>
         Mode of payment:
         <div class="text-center mt-2">
           <!-- Button trigger modal -->
 
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="check()">
             Cash on deliver
           </button>
 
@@ -181,6 +184,12 @@
     Swal.fire('Please Fill out the Field')
     return false;
   }
+}
+
+function check(){
+  $('input[name="custid"]').prop('checked', false);
+  Swal.fire('Please select an adress')
+  return false;
 }
 </script>
 
