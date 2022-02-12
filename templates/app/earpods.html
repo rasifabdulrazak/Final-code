@@ -35,7 +35,7 @@
           <div class="card-body">
             <h5 class="card-title" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{product.title}}</h5>
             <span><p class="card-text">{{product.color}} , {{product.category}}</p></span>
-            <p style="color: gray;">({{product.stock}}) {% if product.product_offer > 0 or product.category.category_offer > 0 %}  {% if product.product_offer > product.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{product.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 97, 0);">{{product.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
+            <p style="color: gray;">{% if product.stock == 0 %}(No stock){% else %}({{product.stock}}){% endif %} {% if product.product_offer > 0 or product.category.category_offer > 0 %}  {% if product.product_offer > product.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{product.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 97, 0);">{{product.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
             <p style="color: rgb(0, 0, 0);  font-weight: bold;"> ₹{{product.discounted_price}}<span style="color: rgb(106, 106, 106);">{% if product.product_offer > 0 or product.category.category_offer > 0 %}|<strike>₹{{product.selling_price}}{% endif %}</span></strike> <p></p></p>
             <a href="{% url 'product_detail' product.id %}"><button type="submit" class="btn btn-primary shadow-lg">View details</button></a> 
           </div>

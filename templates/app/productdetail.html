@@ -6,17 +6,17 @@
  <div class="row">
     {% if product %}
   <div class="col-sm-6  d-flex text-center align-self-center"  style="margin-top: 3rem;">
-    <div class="previewPane col-md-6 col-12"></div><div id="zoomer"></div>
+    <div class="previewPane"></div><div id="zoomer"></div>
       <div class="imgline ">
    <img src="{{product.image.url}}" alt="" class=" imgkey img-fluid img-thumbnail d-none" id=""  >
 </div>
 
-   <!-- <div class="container-fluid product-images  justify-content-evenly mt-5 ">
+   <div class="container-fluid product-images  justify-content-evenly mt-5 ">
     <img  src="{% static 'app/images/3.jpg' %}" alt="" class="img-fluid img-thumbnail imgkey" style="height: 7rem; width: 7rem;">
     <img src="{% static 'app/images/4.jpg' %}" alt="" class="img-fluid img-thumbnail imgkey "  style="height: 7rem; width: 7rem;">
     <img  src="{% static 'app/images/boat.jpg' %}" alt="" class="img-fluid img-thumbnail imgkey "  style="height: 7rem; width: 7rem;">
     
-   </div> -->
+   </div>
   
   </div>
 
@@ -77,15 +77,16 @@
     .previewPane{
         /* display:inline-block; */
         width:800px;
-        height: 500px;
+        height: auto;
         cursor:crosshair;
         background-repeat:no-repeat;
         /* margin-right: ; */
-        background-size:100%}
+        background-size:contain}
     #zoomer{
         background: #fff;
         display:none;
         background-repeat:no-repeat;
+        background-position: 200%;
         width:800px;
         height:600px;
         z-index: 1000;
