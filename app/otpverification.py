@@ -1,9 +1,9 @@
+from .views import *
 import os
 from twilio.rest import Client
 from django.views.decorators.cache import never_cache
-num =''
-otp =''
-from .views import *
+num = ''
+otp = ''
 
 
 # .............sending otp..............
@@ -15,9 +15,9 @@ def send_otp(number):
         auth_token = os.environ['TWILIO_AUTH_TOKEN'] = 'bcc0377123dba01a4a718fc89436ab21'
         client = Client(account_sid, auth_token)
         verification = client.verify \
-                        .services('VA3a30f2d843fecd0daac6d60b6c520e04') \
-                        .verifications \
-                        .create(to=num, channel='sms')
+            .services('VA3a30f2d843fecd0daac6d60b6c520e04') \
+            .verifications \
+            .create(to=num, channel='sms')
         return True
     except:
         return False
@@ -29,7 +29,7 @@ def verify_otp(otp):
     auth_token = os.environ['TWILIO_AUTH_TOKEN'] = 'bcc0377123dba01a4a718fc89436ab21'
     client = Client(account_sid, auth_token)
     verification_check = client.verify \
-                            .services('VA3a30f2d843fecd0daac6d60b6c520e04') \
-                            .verification_checks \
-                            .create(to=num, code=otp)
+        .services('VA3a30f2d843fecd0daac6d60b6c520e04') \
+        .verification_checks \
+        .create(to=num, code=otp)
     return verification_check.status

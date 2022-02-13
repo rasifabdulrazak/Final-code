@@ -6,17 +6,17 @@
  <div class="row">
     {% if product %}
   <div class="col-sm-6  d-flex text-center align-self-center"  style="margin-top: 3rem;">
-    <div class="previewPane"></div><div id="zoomer"></div>
+    <div class="previewPane col-md-6 col-12"></div><div id="zoomer"></div>
       <div class="imgline ">
-   <img src="{{product.image.url}}" alt="" class=" imgkey img-fluid img-thumbnail d-none" id=""  >
+   <img src="{{product.image.url}}" alt="" class=" imgkey img-fluid img-thumbnail d-none" id="" style="width: 500px; height: 500px;" >
 </div>
 
-   <div class="container-fluid product-images  justify-content-evenly mt-5 ">
+   <!-- <div class="container-fluid product-images  justify-content-evenly mt-5 ">
     <img  src="{% static 'app/images/3.jpg' %}" alt="" class="img-fluid img-thumbnail imgkey" style="height: 7rem; width: 7rem;">
     <img src="{% static 'app/images/4.jpg' %}" alt="" class="img-fluid img-thumbnail imgkey "  style="height: 7rem; width: 7rem;">
     <img  src="{% static 'app/images/boat.jpg' %}" alt="" class="img-fluid img-thumbnail imgkey "  style="height: 7rem; width: 7rem;">
     
-   </div>
+   </div> -->
   
   </div>
 
@@ -39,26 +39,20 @@
    <h2>{{product.title}}</h2>
    <hr>
    <p><h4>Product description:</h4>{{product.description}}</p> <br>
-   <p>Color : {{product.color}}    {% if product.product_offer > 0 or product.category.category_offer > 0 %} {% if product.product_offer > product.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{product.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 232, 0);">{{product.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
+   <p>Color : {{product.color}}    {% if product.product_offer > 0 or product.category.category_offer > 0 %} {% if product.product_offer > product.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{product.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 97, 0);">{{product.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
    <h4> ₹{{product.discounted_price}}&nbsp;<small class="fw-light text-decoration-line-through">{% if product.product_offer > 0 or product.category.category_offer  %}₹{{product.selling_price}}{% endif %}</small></h4> <br>
    
     {% if item_in_cart %}
      <a href="{% url 'show_cart' %}"><button type="submit" class="btn btn-secondary shadow-lg">Go to cart</button></a>
-     {% elif product.stock == 0 %}
-     <a href=""><button type="submit" class="btn btn-secondary shadow-lg">Out of stock</button></a>
     {% else %}
      <a href="{% url 'add_to_cart' product.id %}"><button type="submit" class="btn btn-primary shadow-lg">Add to cart</button></a>
     {% endif %}
   
-    {% if product.stock == 0 %}
-  <input type="hidden" class="btn btn-secondary" disabled value="Out of stock">
-   {% else %}
    <a href="{% url 'buynow' product.id %}" class="btn btn-danger shadow-lg">Buy Now</a>
-   {% endif %}
    <h5 class="mt-5">Available Offers</h5>
    <ul>
-     {% if product.product_offer > 0 or product.category.category_offer > 0 %}
-    <li>You have {% if product.product_offer > product.category.category_offer %}<span style="color: rgb(10, 255, 10);">{{product.product_offer}}%</span>{% else %}<span style="color: rgb(0, 179, 0);">{{product.category.category_offer}}%</span> discount on this product{% endif %}</li>
+     {% if product.product_offer > 0 %}
+    <li>You have <span style="color: green;">{{product.product_offer}}%</span> discount on this product</li>
     <li>No cost EMI. Standard EMI also available</li>
     <li>No GST Applied</li>
     {% else %}
@@ -76,17 +70,16 @@
         height:400%;}
     .previewPane{
         /* display:inline-block; */
-        width:800px;
-        height: auto;
+        width:500px;
+        height: 500px;
         cursor:crosshair;
         background-repeat:no-repeat;
         /* margin-right: ; */
-        background-size:contain}
+        background-size:100%}
     #zoomer{
         background: #fff;
         display:none;
         background-repeat:no-repeat;
-        background-position: 200%;
         width:800px;
         height:600px;
         z-index: 1000;

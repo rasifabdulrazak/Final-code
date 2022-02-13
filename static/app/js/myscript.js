@@ -33,7 +33,7 @@ $('.plus-cart').click(function(){
         },
         success : function(data){
             if (data.flag == 0){
-                swal("Error deleting!", "Please try again", "error");
+                swal.fire("Stock Limit", "Only this much stock", "info");
             }
             else{
                 eml.innerText = data.quantity

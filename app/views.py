@@ -36,11 +36,32 @@ client = razorpay.Client(
 @never_cache
 def user_profile(request):
     if request.session.has_key('user'):
+        form = edit_user_profile()
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         adress = User_details.objects.filter(user=newuser)
         cart_count = len(Cart_details.objects.filter(user=newuser))
-        return render(request, 'app/userprofile.html', {'user': newuser, 'adress': adress, 'cart_count': cart_count})
+        return render(request, 'app/userprofile.html', {'user': newuser, 'adress': adress, 'cart_count': cart_count, 'form': form})
+    else:
+        return redirect('user_login')
+
+
+# .............Editing user profile...............
+def edit_user(request):
+    if request.session.has_key('user'):
+        form = edit_user_profile(request.POST or None)
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        if request.method == "POST":
+            firstname = request.POST['first_name']
+            lastname = request.POST['last_name']
+            email = request.POST['email']
+            phone = request.POST['phonenumber']
+            CustomUser.objects.filter(username=newuser).update(
+                first_name=firstname, last_name=lastname, email=email, phonenumber=phone)
+            return redirect('user_profile')
+        else:
+            return redirect('user_profile')
     else:
         return redirect('user_login')
 
@@ -62,22 +83,21 @@ def payment(request, mode):
                     coupen_code=request.session['coupon'])
                 for cart in cart:
                     sub = cart.quantity*cart.products.discounted_price + 90
-                    total = sub - (sub*couponcode.discount/100)
                     orders = order_placed(user=newuser, adress=adress, product=cart.products, quantity=cart.quantity,
-                                          sub_total=total, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
+                                          sub_total=sub, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
                     orders.save()
                     cart.delete()
                     c = cart.products.stock - cart.quantity
                     product = cart.products
                     Products.objects.filter(
-                        title=cart.products).update(stock=c)
-                    del request.session['coupon']
+                        title=product).update(stock=c)
+                del request.session['coupon']
                 return redirect('orders')
             else:
                 for cart in cart:
-                    sum = int(cart.quantity*cart.products.discounted_price)
+                    sub = cart.quantity*cart.products.discounted_price
                     orders = order_placed(user=newuser, adress=adress, product=cart.products,
-                                          quantity=cart.quantity, sub_total=sum, mode_of_payment=mode_of_payment[mode])
+                                          quantity=cart.quantity, sub_total=sub, mode_of_payment=mode_of_payment[mode])
                     orders.save()
                     cart.delete()
                     c = cart.products.stock - cart.quantity
@@ -107,8 +127,9 @@ def buy_now_payment(request, mode, pk):
             if request.session.has_key('buycoupon'):
                 couponcode = Coupon.objects.get(
                     coupen_code=request.session['buycoupon'])
+                sub = totalamount - (totalamount*couponcode.discount/100)
                 orders = order_placed(user=newuser, adress=adress, product=product, quantity=1,
-                                      sub_total=totalamount, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
+                                      sub_total=sub, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
                 orders.save()
                 c = product.stock - 1
                 Products.objects.filter(title=product.title).update(stock=c)
@@ -137,11 +158,9 @@ def order_cancelation(request, pk):
         orders.status = "Canceled"
         orders.save()
         title = orders.product.title
-        print(title)
         stock = orders.quantity
         pro = orders.product.stock + stock
         product = Products.objects.filter(title=title).update(stock=pro)
-        print(product)
         return redirect('orders')
     else:
         return redirect('user_login')
@@ -305,7 +324,7 @@ def plus_cart(request):
                     amount += tempamount
                     total_amount = amount + shipping_amount
             else:
-                flag = 0
+                return JsonResponse({'flag': 0})
             data = {
                 'tempamount': tempamount,
                 'quantity': cart.quantity,
@@ -399,10 +418,13 @@ def buy_now(request, pk):
         couponcode = request.POST.get('couponcode')
         if Coupon.objects.filter(coupen_code=couponcode).exists():
             code = Coupon.objects.get(coupen_code=couponcode)
-            total_amount -= (total_amount*code.discount/100)
-            message = "Coupon Applied you have got " + \
-                str(code.discount)+" % off"
-            request.session['buycoupon'] = code.coupen_code
+            if order_placed.objects.filter(coupon=code, user=newuser).exists():
+                message = "Coupon already Applied"
+            else:
+                total_amount -= (total_amount*code.discount/100)
+                message = "Coupon Applied you have got " + \
+                    str(code.discount)+" % off"
+                request.session['buycoupon'] = code.coupen_code
         DATA = {
             "amount": int(total_amount)*100,
             "currency": "INR",
@@ -646,10 +668,13 @@ def checkout(request):
                 total_amount = amount + shipping_amount
             if Coupon.objects.filter(coupen_code=couponcode).exists():
                 code = Coupon.objects.get(coupen_code=couponcode)
-                total_amount -= int(total_amount*code.discount/100)
-                request.session['coupon'] = code.coupen_code
-                message = "Coupon Applied you have got " + \
-                    str(code.discount)+" % off"
+                if order_placed.objects.filter(coupon=code, user=newuser).exists():
+                    message = "Coupon already Applied"
+                else:
+                    total_amount -= int(total_amount*code.discount/100)
+                    request.session['coupon'] = code.coupen_code
+                    message = "Coupon Applied you have got " + \
+                        str(code.discount)+" % off"
         DATA = {
             "amount": int(total_amount)*100,
             "currency": "INR",
