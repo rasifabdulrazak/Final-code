@@ -75,8 +75,6 @@ STATUS_CHOICES = {
     ("Packed", "Packed"),
     ("On the way", "On the way"),
     ("Delivered", "Delivered"),
-    ("Canceled", "Canceled"),
-    ("Return", "Return"),
 
 }
 

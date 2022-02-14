@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.views.decorators.cache import never_cache
 from django.http import JsonResponse
 from django.db import connection
+from decouple import config
 # Download the helper library from https://www.twilio.com/docs/python/install
 import os
 from twilio.rest import Client
@@ -28,7 +29,7 @@ mode_of_payment = {
 # .............................................................................................................
 
 client = razorpay.Client(
-    auth=("rzp_test_az3fn8j9AYBZwn", "qaZ2p2jvOkC0XDBWrnM8WFxL"))
+    auth=(config('RAZORPAYAUTHONE'), config('RAZORPAYAUTHSECOND')))
 
 # ............userprofile.................
 
@@ -278,7 +279,7 @@ def show_cart(request):
         amount = 0.0
         shipping_amount = 90.0
         total_amount = 0.0
-        cart_product = [p for p in Cart_details.objects.all()
+        cart_product = [p for p in Cart_details.objects.all().order_by('-sub_total')
                         if p.user == newuser]
         if cart_product:
             for p in cart_product:
