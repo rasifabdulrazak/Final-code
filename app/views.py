@@ -87,6 +87,7 @@ def payment(request, mode):
                     coupen_code=request.session['coupon'])
                 for cart in cart:
                     sub = cart.quantity*cart.products.discounted_price + 90
+                    price = int(sub - (sub*couponcode.discount/100))
                     orders = order_placed(user=newuser, adress=adress, product=cart.products, quantity=cart.quantity,
                                           sub_total=sub, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
                     orders.save()
@@ -131,7 +132,8 @@ def buy_now_payment(request, mode, pk):
             if request.session.has_key('buycoupon'):
                 couponcode = Coupon.objects.get(
                     coupen_code=request.session['buycoupon'])
-                sub = totalamount - (totalamount*couponcode.discount/100)
+                sub = int(totalamount - (totalamount*couponcode.discount/100))
+                print(sub)
                 orders = order_placed(user=newuser, adress=adress, product=product, quantity=1,
                                       sub_total=sub, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
                 orders.save()
