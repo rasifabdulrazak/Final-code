@@ -14,6 +14,9 @@ from django.views.decorators.cache import never_cache
 from django.http import JsonResponse
 from django.db import connection
 from decouple import config
+from django.conf import settings
+from Eshopee.settings import RAZORPAYAUTHONE,RAZORPAYAUTHSECOND
+# from settings import RAZORPAYAUTHONE,RAZORPAYAUTHSECOND
 # Download the helper library from https://www.twilio.com/docs/python/install
 import os
 from twilio.rest import Client
@@ -29,7 +32,7 @@ mode_of_payment = {
 # .............................................................................................................
 
 client = razorpay.Client(
-    auth=(config('RAZORPAYAUTHONE'), config('RAZORPAYAUTHSECOND')))
+    auth=(RAZORPAYAUTHONE,RAZORPAYAUTHSECOND))
 
 # ............userprofile.................
 

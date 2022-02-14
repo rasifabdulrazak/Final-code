@@ -1,6 +1,8 @@
 from .views import *
 import os
+from Eshopee.settings import TWILIOACCOUNTSID,TWILIOAUTHTOKEN,TWILIOSERVICE
 from twilio.rest import Client
+from django.conf import settings
 from decouple import config
 from django.views.decorators.cache import never_cache
 num = ''
@@ -12,11 +14,11 @@ def send_otp(number):
     global num
     num = number
     try:
-        account_sid = os.environ['TWILIO_ACCOUNT_SID'] = config('TWILIOACCOUNTSID')
-        auth_token = os.environ['TWILIO_AUTH_TOKEN'] = config('TWILIOAUTHTOKEN')
+        account_sid = os.environ['TWILIO_ACCOUNT_SID'] = TWILIOACCOUNTSID
+        auth_token = os.environ['TWILIO_AUTH_TOKEN'] = TWILIOAUTHTOKEN
         client = Client(account_sid, auth_token)
         verification = client.verify \
-            .services(config('TWILIOSERVICE')) \
+            .services(TWILIOSERVICE) \
             .verifications \
             .create(to=num, channel='sms')
         return True
@@ -26,11 +28,11 @@ def send_otp(number):
 
 # ............verifying otp.............
 def verify_otp(otp):
-    account_sid = os.environ['TWILIO_ACCOUNT_SID'] = config('TWILIOACCOUNTSID')
-    auth_token = os.environ['TWILIO_AUTH_TOKEN'] = config('TWILIOAUTHTOKEN')
+    account_sid = os.environ['TWILIO_ACCOUNT_SID'] = TWILIOACCOUNTSID
+    auth_token = os.environ['TWILIO_AUTH_TOKEN'] = TWILIOAUTHTOKEN
     client = Client(account_sid, auth_token)
     verification_check = client.verify \
-        .services(config('TWILIOSERVICE')) \
+        .services(TWILIOSERVICE) \
         .verification_checks \
         .create(to=num, code=otp)
     return verification_check.status
