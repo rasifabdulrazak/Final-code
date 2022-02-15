@@ -20,27 +20,49 @@
        <a href="{% url 'bluetooth_data' 'above' %}" class="list-group-item list-group-item-action mt-2 shadow"><h5>Above 5000</h5></a>
    </div>
   </div>
-   <div class="col-sm-8 offset-sm-1">
+   <div class="col-sm-9 offset-sm-1">
     {% if products %}
     <div class="row my-3">
       {% for product in products %}
-      <div class="col-md-3 ml-5 mt-2">
-        
-        <div class="card shadow-lg ml-2 mt-2" style="width: 16rem; height:auto; background-color: whitesmoke;">
-          <a href="{% url 'product_detail' product.id %}">
-            <div class="inner align-items-center p-3">
-            <img class="card-img-top img-fluid" src="{{product.image.url}}" alt="Card image cap" style="height: 12rem;  width: 16rem;">
-          </div>
-          </a>
-          <div class="card-body">
-            <h5 class="card-title" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{product.title}}</h5>
-            <span><p class="card-text">{{product.color}} , {{product.category}}</p></span>
-            <p style="color: gray;">{% if product.stock == 0 %}(No stock){% else %}({{product.stock}}){% endif %} {% if product.product_offer > 0 or product.category.category_offer > 0 %}  {% if product.product_offer > product.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{product.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 97, 0);">{{product.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
-            <p style="color: rgb(0, 0, 0);  font-weight: bold;"> ₹{{product.discounted_price}}<span style="color: rgb(106, 106, 106);">{% if product.product_offer > 0 or product.category.category_offer > 0 %}|<strike>₹{{product.selling_price}}{% endif %}</span></strike> <p></p></p>
-            <a href="{% url 'product_detail' product.id %}"><button type="submit" class="btn btn-primary shadow-lg">View details</button></a> 
-          </div>
+      <div class="card shadow-lg ml-2 mt-2" style="width: 18rem; height:auto; background-color: whitesmoke;">
+        <a href="{% url 'product_detail' product.id %}">
+          <div class="inner align-items-center p-3">
+          <img class="card-img-top img-fluid" src="{{product.image.url}}" alt="Card image cap" style="height: 12rem;  width: 16rem;">
         </div>
+        </a>
+        <div class="card-body">
+          <h5 class="card-title" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{product.title}}</h5>
+          <span><p class="card-text">{{product.color}} , {{product.category}}</p></span>
+          <p style="color: gray;">{% if product.product_offer > 0 or product.category.category_offer > 0 %} {% if product.product_offer > product.category.category_offer %}<span style="color: rgb(0, 97, 0);">{{product.product_offer}}% off</span>{% else %}<span style="color: rgb(0, 97, 0);">{{product.category.category_offer}}% off</span>{% endif %} {% endif %}</p>
+          <p style="color: rgb(0, 0, 0);  font-weight: bold;"> ₹{{product.discounted_price}}<span style="color: rgb(106, 106, 106);">{% if product.product_offer > 0 or product.category.category_offer > 0 %}|<strike>₹{{product.selling_price}}{% endif %}</span></strike> <p></p></p>
+          <div id="block_container">
+            {% if product not in cart_product %}
+        {% if product.stock == 0 %}
+        <button class="btno" title="Add to cart" onclick="stockless()"><i class="fa fa-shopping-cart"></i></button>
+        {% else %}
+        <a href="{% url 'add_to_cart' product.id %}"><button class="btno" title="Add to cart"><i class="fa fa-shopping-cart"></i></button></a>
+        {% endif %}
+        {% else %}
+        <button class="btns" onclick="cart()" title="Item Already in cart"><i class="fa fa-shopping-cart"></i></button>
+        {% endif %}
+        {% if product not in wish_product %}
+        {% if product.stock == 0 %}
+        <button class="btno" title="Add to cart" onclick="stockless()"><i class="fa fa-heart"></i></button>
+        {% else %}
+        <a href="{% url 'add_to_wishlist' product.id %}"><button class="btno" title="Add to wishlist"><i class="fa fa-heart"></i></button></a>
+        {% endif %}
+        {% else %}
+        <button class="btns" onclick="wishlist()" title="Item Already in wishlist"><i class="fa fa-heart"></i></button>
+        {% endif %}
+        {% if product.stock == 0 %}
+        <button class="btno" title="Purchase" onclick="stockless()">Buy Now</button>
+        {% else %}
+        <a href="{% url 'buynow' product.id %}"><button class="btno" title="Purchase">Buy Now</button></a>
+        {% endif %}
+    
         
+        </div>
+        </div>
       </div>
      {% endfor %}
     </div>
@@ -69,5 +91,51 @@
 .inner:hover img{
    transform: scale(1.2);
 }
+
+.btno {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.btns {
+  background-color: rgb(255, 59, 59);
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.btnorder {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
+}
 </style>
+
+
+<script>
+  function wishlist() {
+    swal.fire("Item already in wishlist");
+  }
+  
+  function cart() {
+    swal.fire("Item already in cart");
+  }
+
+  function stockless() {
+  swal.fire("Out of stock");
+}
+
+  </script>
 {% endblock main-content %}

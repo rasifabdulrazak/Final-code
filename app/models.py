@@ -33,6 +33,10 @@ class Products(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     image = models.ImageField(
         upload_to="product_image/", null=False, blank=False)
+    imageone = models.ImageField(
+        upload_to="product_image/", null=True)
+    imagetwo = models.ImageField(
+        upload_to="product_image/", null=True)
     product_offer = models.IntegerField(default=0, null=True, blank=True)
     stock = models.IntegerField(default=0)
 
@@ -42,14 +46,21 @@ class Products(models.Model):
 
 # .............Table for cart....................
 class Cart_details(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null = True)
     products = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     sub_total = models.PositiveIntegerField()
+    guest_user = models.CharField(max_length = 300,default = "")
 
     @property
     def total_cost(self):
         return self.quantity * self.products.discounted_price
+
+
+# ...........table for wishlist................
+class wishlist(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
+    wishlist_products = models.ForeignKey(Products, on_delete=models.CASCADE)
 
 
 # ...................Table for Adress of user...............
@@ -93,7 +104,7 @@ class order_placed(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     orderdate = models.DateTimeField(auto_now_add=True)
     status = models.CharField(choices=STATUS_CHOICES,
-                              max_length=100, default='pending')
+                              max_length=100, default='placed')
     sub_total = models.BigIntegerField(null=True)
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True)
     mode_of_payment = models.CharField(max_length=50, null=True)
@@ -101,3 +112,4 @@ class order_placed(models.Model):
     @property
     def total_cost(self):
         return self.quantity * self.product.discounted_price
+

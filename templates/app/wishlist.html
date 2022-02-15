@@ -1,0 +1,76 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Cart{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+ <div class="row">
+  <h1 class="text-center mb-5">WISHLIST</h1>
+  <div class="col-sm-12">
+    {% if wishlist %}
+    {% for i in wishlist %}
+  <div class="card">
+   <div class="card-body">
+    <div class="row">
+     <div class="col-sm-3 text-center align-self-center"><img src="{{i.wishlist_products.image.url}}" alt="" srcset="" class="img-fluid img-thumbnail shadow-sm" height="100" width="100"> </div>
+     <div class="col-sm-9">
+      <div>
+       <h5>{{i.wishlist_products.brand}}</h5>
+       <p class="mb-2 text-muted small">{{i.wishlist_products.title}}</p>
+       <p class="mb-2 text-muted small">color: {{i.wishlist_products.color}}</p>
+
+       <div class="d-flex justify-content-between">
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal{{i.id}}">
+  Remove
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove item from wishlist
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a href="{% url 'remove_wishlist' i.id %}"><button type="button" class="btn btn-danger" pid="">Remove </button></a>
+      </div>
+    </div>
+  </div>
+</div>  
+        <p class="mb-0"><span><strong>Rs. {{i.wishlist_products.discounted_price}}</strong></span></p>
+       
+   
+       </div>
+      </div>
+     </div>
+    </div>
+    <hr class="text-muted">
+   </div>
+   </div>
+   {% endfor %}
+   {% else %}
+   <div class="col-md-12">
+    <div class="card text-center">
+        <div class="card-header">
+          
+        </div>
+        <div class="card-body cart">
+            <div class="col-sm-12 empty-cart-cls text-center"> <img src="https://cdn3.iconfinder.com/data/icons/shopping-and-ecommerce-29/90/empty_cart-512.png" width="130" height="130" class="img-fluid mb-4 mr-3">
+                <h3><strong>No Items in wishlist</strong></h3>
+                <h4>Start shopping :)</h4> <a href="{% url 'home' %}" class="btn btn-primary cart-btn-transform m-3" data-abc="true">continue shopping</a>
+            </div>
+        </div>
+    </div>
+</div>
+   {% endif %}
+  </div>
+  
+ </div>
+</div>
+
+{% endblock main-content %}

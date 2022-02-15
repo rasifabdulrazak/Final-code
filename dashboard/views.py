@@ -200,8 +200,9 @@ def edit_product(request, pk):
 @never_cache
 def category_management(request):
     if request.session.has_key('admin'):
+        form = add_categorys(request.POST or None)
         category = Category.objects.all()
-        return render(request, 'dashboard/category_management.html', {'category': category})
+        return render(request, 'dashboard/category_management.html', {'category': category,'form':form})
     else:
         return redirect('admin_login')
 
@@ -216,8 +217,8 @@ def add_category(request):
                 form.save()
                 return redirect('/category_management/')
         else:
-            form = add_categorys()
-        return render(request, 'dashboard/add_category.html', {'form': form})
+            return redirect('category_management')
+        
     else:
         return redirect('admin_login')
 

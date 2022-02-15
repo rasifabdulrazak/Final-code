@@ -29,7 +29,7 @@ $('.plus-cart').click(function(){
         type : "GET",
         url : "/plus_cart",
         data : {
-            product_id : id
+            cart_id : id
         },
         success : function(data){
             if (data.flag == 0){
@@ -54,7 +54,7 @@ $('.minus-cart').click(function(){
         type : "GET",
         url : "/minus_cart",
         data : {
-            product_id : id
+            cart_id : id
         },
         success : function(data){
             eml.innerText = data.quantity
@@ -72,7 +72,7 @@ $('.remove-cart').click(function(){
         type : "GET",
         url : "/remove_cart",
         data : {
-            product_id : id
+            cart_id : id
         },
         success : function(data){
             location.reload(true);

@@ -34,9 +34,51 @@ mode_of_payment = {
 client = razorpay.Client(
     auth=(RAZORPAYAUTHONE,RAZORPAYAUTHSECOND))
 
+
+
+
+
+# ...........add to wishlist.............
+def add_to_wishlist(request,pk):
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        product_id = Products.objects.get(pk=pk)
+        print(product_id)
+        print("PPPPPPPPPPPPPPPPPPPPPPPP")
+        wishlist(user=newuser, wishlist_products=product_id).save()
+        # wishlist = wishlist.objects.filter(user=newuser)
+        return redirect('show_wishlist')
+    else:
+        return redirect('user_login')
+
+
+
+# .............showing the wishlist............
+@never_cache
+def show_the_wishlist(request):
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        cart_count = len(Cart_details.objects.filter(user=newuser))
+        wishlist_is = wishlist.objects.filter(user=newuser)
+        return render(request, 'app/wishlist.html',{'wishlist':wishlist_is,'cart_count':cart_count})
+    return redirect('user_login')
+
+
+
+# ..........remove from wishlist.................
+def remove_from_wishlist(request,id):
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        product = wishlist.objects.filter(id = id)
+        product.delete()
+        return redirect('show_wishlist')
+
+
+
 # ............userprofile.................
-
-
 @never_cache
 def user_profile(request):
     if request.session.has_key('user'):
@@ -96,8 +138,9 @@ def payment(request, mode):
                     product = cart.products
                     Products.objects.filter(
                         title=product).update(stock=c)
+                    listproduct.append(orders)
                 del request.session['coupon']
-                return redirect('orders')
+                return render(request,'app/invoice.html',{'listproduct':listproduct})
             else:
                 for cart in cart:
                     sub = cart.quantity*cart.products.discounted_price
@@ -109,12 +152,17 @@ def payment(request, mode):
                     product = cart.products
                     Products.objects.filter(
                         title=cart.products).update(stock=c)
-                return redirect('orders')
+                    listproduct.append(orders)
+                    print("PPPPPPPPPPPPPP")
+                return render(request,'app/invoice.html',{'listproduct':listproduct})
         except:
             return redirect('checkout')
     else:
         return redirect('user_login')
 
+
+def invoice(request):
+    return render(request,'app/invoice.html')
 
 # ...............buynow................
 @never_cache
@@ -129,6 +177,7 @@ def buy_now_payment(request, mode, pk):
             adress = User_details.objects.get(id=custid)
             product = Products.objects.get(pk=pk)
             totalamount = product.discounted_price + 90
+            value_list = []
             if request.session.has_key('buycoupon'):
                 couponcode = Coupon.objects.get(
                     coupen_code=request.session['buycoupon'])
@@ -139,15 +188,18 @@ def buy_now_payment(request, mode, pk):
                 orders.save()
                 c = product.stock - 1
                 Products.objects.filter(title=product.title).update(stock=c)
+                value_list.append(orders)
                 del request.session['buycoupon']
-                return redirect('orders')
+                return render(request,'app/buynowinvoice.html',{'value_list':value_list})
             else:
                 orders = order_placed(user=newuser, adress=adress, product=product,
                                       quantity=1, sub_total=totalamount, mode_of_payment=mode_of_payment[mode])
                 orders.save()
                 c = product.stock - 1
                 Products.objects.filter(title=product.title).update(stock=c)
-                return redirect('orders')
+                value_list.append(orders)
+                print("((((((((((((((((((((((")
+                return render(request,'app/buynowinvoice.html',{'value_list':value_list})
         except:
             return redirect('buynow')
     else:
@@ -187,6 +239,7 @@ def return_product(request, pk):
 
 
 # ............LANDING PAGE................
+@never_cache
 def home(request):
     if request.session.has_key('user'):
         user = request.session['user']
@@ -194,8 +247,11 @@ def home(request):
         cart_count = len(Cart_details.objects.filter(user=newuser))
         wired = Products.objects.filter(category_id=3)
         wireless = Products.objects.filter(category_id=2)
+        print(wired)
         earpodes = Products.objects.filter(category_id=1)
         products = Products.objects.all()
+        wish_product = [i.wishlist_products for i in wishlist.objects.filter(user = newuser)]
+        cart_product = [i.products for i in Cart_details.objects.filter(user = newuser)]
         context = {
             'wired': wired,
             'wireless': wireless,
@@ -203,6 +259,8 @@ def home(request):
             'products': products,
             'user': user,
             'cart_count': cart_count,
+            'wish_product':wish_product,
+            'cart_product':cart_product
         }
         return render(request, 'app/home.html', context)
     else:
@@ -270,7 +328,14 @@ def add_to_cart(request, pk):
         cart = Cart_details.objects.filter(user=newuser)
         return redirect('show_cart')
     else:
-        return redirect('user_login')
+        product_id = Products.objects.get(pk=pk)
+        if not request.session.session_key:
+            request.session.create()
+        session_key = request.session.session_key
+        Cart_details(guest_user=session_key, products=product_id,
+                     sub_total=product_id.discounted_price, quantity=1).save()
+        cart = Cart_details.objects.filter(guest_user=session_key)
+        return redirect('show_cart')
 
 
 # ..........SHOWING CART...................
@@ -303,7 +368,32 @@ def show_cart(request):
         else:
             return render(request, 'app/emptycart.html', {'user': user, 'cart_count': cart_count})
     else:
-        return redirect('user_login')
+        if not request.session.session_key:
+            request.session.create()
+        session_key = request.session.session_key
+        cart_count = len(Cart_details.objects.filter(guest_user=session_key))
+        cart = Cart_details.objects.filter(guest_user=session_key)
+        amount = 0.0
+        shipping_amount = 90.0
+        total_amount = 0.0
+        cart_product = [p for p in Cart_details.objects.all().order_by('-sub_total')
+                        if p.guest_user == session_key]
+        if cart_product:
+            for p in cart_product:
+                tempamount = (p.quantity * p.products.discounted_price)
+                amount += tempamount
+                total_amount = amount + shipping_amount
+            context = {
+                'user':None,
+                'cart': cart,
+                'totalamount': total_amount,
+                'amount': amount,
+                'tempamount': tempamount,
+                'cart_count': cart_count
+            }
+            return render(request, 'app/addtocart.html', context)
+        else:
+            return render(request, 'app/emptycart.html', {'cart_count': cart_count,'user':None})
 
 
 # ......INCREASING THE QUANTITY OF PRODUCT...........
@@ -313,10 +403,9 @@ def plus_cart(request):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         if request.method == "GET":
-            product_id = request.GET['product_id']
+            cart_id = request.GET['cart_id']
             product = Products.objects.all()
-            cart = Cart_details.objects.get(
-                Q(products=product_id) & Q(user=newuser))
+            cart = Cart_details.objects.get(id=cart_id)
             if cart.quantity < cart.products.stock:
                 cart.quantity += 1
                 flag = 1
@@ -350,9 +439,8 @@ def minus_cart(request):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         if request.method == "GET":
-            product_id = request.GET['product_id']
-            cart = Cart_details.objects.get(
-                Q(products=product_id) & Q(user=newuser))
+            cart_id = request.GET['cart_id']
+            cart = Cart_details.objects.get(id =cart_id)
             cart.quantity -= 1
             if cart.quantity == 0:
                 cart.quantity = 1
@@ -383,9 +471,8 @@ def remove_cart(request):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         if request.method == "GET":
-            product_id = request.GET['product_id']
-            cart = Cart_details.objects.get(
-                Q(products=product_id) & Q(user=newuser))
+            cart_id = request.GET['cart_id']
+            cart = Cart_details.objects.get(id = cart_id)
             cart.delete()
             return redirect('show_cart')
             amount = 0.0
@@ -528,6 +615,8 @@ def wired(request, data=None):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         cart_count = len(Cart_details.objects.filter(user=newuser))
+        wish_product = [i.wishlist_products for i in wishlist.objects.filter(user = newuser)]
+        cart_product = [i.products for i in Cart_details.objects.filter(user = newuser)]
         if data == None:
             products = Products.objects.filter(category=3)
         elif data == "Boat" or data == "Boult" or data == "OnePlus" or data == "RealMe":
@@ -543,7 +632,7 @@ def wired(request, data=None):
         elif data == "between":
             products = Products.objects.filter(
                 category=3, discounted_price__range=(1000, 3000))
-        return render(request, 'app/wired.html', {'products': products, 'user': user, 'cart_count': cart_count})
+        return render(request, 'app/wired.html', {'products': products, 'user': user, 'cart_count': cart_count,'cart_product':cart_product,'wish_product':wish_product})
     else:
         user = None
         if data == None:
@@ -561,7 +650,7 @@ def wired(request, data=None):
         elif data == "between":
             products = Products.objects.filter(
                 category=3, discounted_price__range=(1000, 3000))
-        return render(request, 'app/wired.html', {'products': products, 'user': user})
+        return render(request, 'app/wired.html', {'products': products, 'user': user,'cart_product':cart_product,'wish_product':wish_product})
 
 
 # ..............VIEW BLUETOOTH HEADPHONES AND FILTRATION BASED ON PRODUCT BRAND COLOR AND PRICE....................
@@ -571,6 +660,8 @@ def bluetooth(request, data=None):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         cart_count = len(Cart_details.objects.filter(user=newuser))
+        wish_product = [i.wishlist_products for i in wishlist.objects.filter(user = newuser)]
+        cart_product = [i.products for i in Cart_details.objects.filter(user = newuser)]
         if data == None:
             products = Products.objects.filter(category=2)
         elif data == "Boat" or data == "Sony" or data == "OnePlus":
@@ -586,7 +677,7 @@ def bluetooth(request, data=None):
         elif data == "between":
             products = Products.objects.filter(
                 category=2, discounted_price__range=(2000, 5000))
-        return render(request, 'app/bluetooth.html', {'products': products, 'user': user, 'cart_count': cart_count})
+        return render(request, 'app/bluetooth.html', {'products': products, 'user': user, 'cart_count': cart_count,'cart_product':cart_product,'wish_product':wish_product})
     else:
         user = None
         if data == None:
@@ -604,7 +695,7 @@ def bluetooth(request, data=None):
         elif data == "between":
             products = Products.objects.filter(
                 category=2, discounted_price__range=(2000, 5000))
-        return render(request, 'app/bluetooth.html', {'products': products, 'user': user})
+        return render(request, 'app/bluetooth.html', {'products': products, 'user': user,'cart_product':cart_product,'wish_product':wish_product})
 
 
 # ..............VIEW EARPODS AND FILTRATION BASED ON PRODUCT BRAND COLOR AND PRICE....................
@@ -614,6 +705,8 @@ def earpodes(request, data=None):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         cart_count = len(Cart_details.objects.filter(user=newuser))
+        wish_product = [i.wishlist_products for i in wishlist.objects.filter(user = newuser)]
+        cart_product = [i.products for i in Cart_details.objects.filter(user = newuser)]
         if data == None:
             products = Products.objects.filter(category=1)
         elif data == "Boat" or data == "Mivi" or data == "Apple":
@@ -629,7 +722,7 @@ def earpodes(request, data=None):
         elif data == "between":
             products = Products.objects.filter(
                 category=1, discounted_price__range=(5000, 10000))
-        return render(request, 'app/earpods.html', {'products': products, 'user': user, 'cart_count': cart_count})
+        return render(request, 'app/earpods.html', {'products': products, 'user': user, 'cart_count': cart_count,'cart_product':cart_product,'wish_product':wish_product})
     else:
         user = None
         if data == None:
@@ -647,7 +740,7 @@ def earpodes(request, data=None):
         elif data == "between":
             products = Products.objects.filter(
                 category=1, discounted_price__range=(5000, 10000))
-        return render(request, 'app/earpods.html', {'products': products, 'user': user})
+        return render(request, 'app/earpods.html', {'products': products, 'user': user,'cart_product':cart_product,'wish_product':wish_product})
 
 
 # .................CHECKOUT PAGE..................

@@ -54,7 +54,7 @@
                             <th>{{category.category_offer}}%</th>
                             <th><form action="{% url 'category-offer' %}" method="post"  name="myForm"> 
                                 {% csrf_token %} 
-                                <input type="number" value="0"  min="0" max="100" name="catoffer" style="width: 50px; height: 30px;">
+                                <input type="number" value="0"  min="0" max="70" name="catoffer" style="width: 50px; height: 30px;">
                                 <input type="hidden" value="{{category.id}}" name="id">
                                 <button type="submit" class="btn btn-success" style="border-radius: 5px;">Set</button>
                             </form>
