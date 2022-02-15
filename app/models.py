@@ -59,8 +59,9 @@ class Cart_details(models.Model):
 
 # ...........table for wishlist................
 class wishlist(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE,null = True)
     wishlist_products = models.ForeignKey(Products, on_delete=models.CASCADE)
+    guest_user = models.CharField(max_length = 300,default = "")
 
 
 # ...................Table for Adress of user...............
