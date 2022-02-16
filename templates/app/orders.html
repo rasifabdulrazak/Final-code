@@ -122,9 +122,12 @@
         <div class="progress">
             <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
+        <!-- <p>Delivered on {{order.delivered_date}}</p> -->
+        {% if order not in order_list %}
         <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal{{order.id}}">
             Return
           </button>
+          {% endif %}
           
           <!-- Modal -->
           <div class="modal fade" id="exampleModal{{order.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

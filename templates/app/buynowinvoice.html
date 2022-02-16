@@ -29,7 +29,7 @@
                       
                     </div> <br />
                     <div>
-                        <table class="table">
+                        <table class="table" id="example">
                             <thead>
                                 <tr>
                                     <th>
@@ -41,24 +41,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                   
                                 <tr>
                                     <td class="col-md-9">{{prolist.product}} ({{prolist.quantity}})</td>
                                     <td class="col-md-3"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{prolist.product.discounted_price}} </td>
                                 </tr>
-                    
-                                <!-- <tr>
-                                    <td class="col-md-9">JBL Bluetooth Speaker</td>
-                                    <td class="col-md-3"><i class="fas fa-rupee-sign" area-hidden="true"></i> 5,200 </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-9">Apple Iphone 6s 16GB</td>
-                                    <td class="col-md-3"><i class="fas fa-rupee-sign" area-hidden="true"></i> 25,000 </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-9">MI Smartwatch 2</td>
-                                    <td class="col-md-3"><i class="fas fa-rupee-sign" area-hidden="true"></i> 2,200 </td>
-                                </tr> -->
                                 <tr>
                                     <td class="text-left">
                                         <p> <strong>Shipped To:</strong> </p>
@@ -74,12 +60,6 @@
                                         <p> <strong>Discount:{{prolist.coupon.discount}} %</strong> </p>
                                         <p> <strong>Payable Amount:{{prolist.sub_total}} </strong> </p>
                                     </td>
-                                    <!-- <td>
-                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> 500 </strong> </p>
-                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> 82,900</strong> </p>
-                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> 3,000 </strong> </p>
-                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> 79,900</strong> </p>
-                                    </td> -->
                                 </tr>
                                 
                                 <tr style="color: #F81D2D;">
@@ -94,6 +74,7 @@
                             </tbody>
                            
                         </table>
+                        <button id="pdf">Download pdf</button>
                     </div>
                     <div>
                         <div class="col-md-12">
@@ -110,6 +91,8 @@
         <a href="{% url 'orders' %}"><button class="btn btn-success">Order Summary</button></a>
     </div>
 </div>
+
+<script src="{% static 'app/js/pdf.js' %}"></script>
 <style>
      .body-main {
      background: #ffffff;
@@ -136,4 +119,18 @@
      text-align: center
  }
 </style>
+
+<script>
+    document.getElementById('pdf').onclick = function pdfpage(){
+        alert("Are you sure you want to download the pdf");
+        var pdf = document.getElementById('example');
+        var option = {
+            margin : 1,
+            filename : 'invoice.pdf',
+            html2canvas : {scale : 9},
+            jsPDF : {unit:'in',format:'letter',orientation:'portrait'}
+        };
+        html2pdf(pdf,option);
+    }
+</script>
 {% endblock main-content %}

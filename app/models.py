@@ -109,7 +109,7 @@ class order_placed(models.Model):
     sub_total = models.BigIntegerField(null=True)
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True)
     mode_of_payment = models.CharField(max_length=50, null=True)
-  
+    delivered_date = models.DateField(null=True)
 
     @property
     def total_cost(self):

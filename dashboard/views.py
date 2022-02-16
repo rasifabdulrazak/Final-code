@@ -8,6 +8,7 @@ from .forms import *
 from django.views.decorators.cache import never_cache
 import django_filters
 from django_filters import DateFilter
+from datetime import datetime
 
 # ...............admin-login..............
 
@@ -293,6 +294,8 @@ def edit_status(request, pk):
         if request.method == 'POST':
             form = order_status(request.POST, instance=status)
             form.save()
+            if status.status == "Delivered":
+                order_placed.objects.filter(id=pk).update(delivered_date=datetime.now())
             return redirect('order_management')
         else:
             form = order_status(instance=status)

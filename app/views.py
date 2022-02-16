@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from django.db import connection
 from decouple import config
 from django.conf import settings
+from django.db.models import Sum, Count
 from Eshopee.settings import RAZORPAYAUTHONE,RAZORPAYAUTHSECOND
 # from settings import RAZORPAYAUTHONE,RAZORPAYAUTHSECOND
 # Download the helper library from https://www.twilio.com/docs/python/install
@@ -22,6 +23,7 @@ import os
 from twilio.rest import Client
 from .otpverification import *
 from django.shortcuts import get_object_or_404
+from datetime import date
 form = ''
 number = ''
 mode_of_payment = {
@@ -36,13 +38,15 @@ client = razorpay.Client(
 
 
 
-
+# ...........showing invoice of buynow..................
 def buy_now_invoice(request):
     if request.session.has_key('user'):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         pro_list = order_placed.objects.all().last()
         return render(request,'app/buynowinvoice.html',{'prolist':pro_list})
+    else:
+        return redirect('user_login')
 
 
 
@@ -151,7 +155,7 @@ def payment(request, mode):
             custid = request.GET.get('custid')
             adress = User_details.objects.get(id=custid)
             cart = Cart_details.objects.filter(user=newuser)
-            listproduct = []
+            count = 0
             if request.session.has_key('coupon'):
                 couponcode = Coupon.objects.get(
                     coupen_code=request.session['coupon'])
@@ -161,35 +165,54 @@ def payment(request, mode):
                     orders = order_placed(user=newuser, adress=adress, product=cart.products, quantity=cart.quantity,
                                           sub_total=sub, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
                     orders.save()
+                    count = count+1
                     cart.delete()
                     c = cart.products.stock - cart.quantity
                     product = cart.products
                     Products.objects.filter(
                         title=product).update(stock=c)
-                listproduct.append(orders)
                 del request.session['coupon']
-                return render(request,'app/invoice.html',{'listproduct':listproduct,'user':user})
+                return redirect('/invoice/'+str(count))
             else:
                 for cart in cart:
                     sub = cart.quantity*cart.products.discounted_price
                     orders = order_placed(user=newuser, adress=adress, product=cart.products,
                                           quantity=cart.quantity, sub_total=sub, mode_of_payment=mode_of_payment[mode])
                     orders.save()
+                    count = count+1
                     cart.delete()
                     c = cart.products.stock - cart.quantity
                     product = cart.products
                     Products.objects.filter(
                         title=cart.products).update(stock=c)
-                listproduct.append(orders)
-                return render(request,'app/invoice.html',{'listproduct':listproduct,'user':user})
+                return redirect('/invoice/'+str(count))
         except:
             return redirect('checkout')
     else:
         return redirect('user_login')
 
 
-def invoice(request):
-    return render(request,'app/invoice.html')
+def invoice(request,count):
+    c = int(count)
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        order = order_placed.objects.filter(user = newuser).order_by('-orderdate')[:c]
+        addr=order[0].adress
+        user=order[0].user
+        coupen = order[0].coupon
+        date = order[0].orderdate
+        total = order.aggregate(Sum('sub_total'))
+        context = {
+            'order':order,
+            'total':total['sub_total__sum'],
+            'addr':addr,
+            'user':user,
+            'coupen':coupen,
+            'date':date,
+        }
+        return render(request,'app/invoice.html',context)
+
 
 # ...............buynow................
 @never_cache
@@ -217,7 +240,7 @@ def buy_now_payment(request, mode, pk):
                 Products.objects.filter(title=product.title).update(stock=c)
                 value_list.append(orders)
                 del request.session['buycoupon']
-                return redirect('invoice')
+                return redirect('buy_now_invoice')
             else:
                 orders = order_placed(user=newuser, adress=adress, product=product,
                                       quantity=1, sub_total=totalamount, mode_of_payment=mode_of_payment[mode])
@@ -225,7 +248,7 @@ def buy_now_payment(request, mode, pk):
                 c = product.stock - 1
                 Products.objects.filter(title=product.title).update(stock=c)
                 value_list.append(orders)
-            return redirect('invoice')
+            return redirect('buy_now_invoice')
         except:
             return redirect('buynow')
     else:
@@ -714,10 +737,19 @@ def orders(request):
         cart_count = len(Cart_details.objects.filter(user=newuser))
         orders = order_placed.objects.filter(
             user=newuser).order_by('-orderdate')
+        order_list = []
+        for i in orders:
+            deli=i.delivered_date
+            if deli:
+                today=date.today()
+                diff=today-deli
+                if diff.days >= 2 :
+                    order_list.append(i)
         context = {
             'user': user,
             'orders': orders,
-            'cart_count': cart_count
+            'cart_count': cart_count,
+            'order_list':order_list
         }
         return render(request, 'app/orders.html', context)
     else:
