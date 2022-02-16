@@ -920,6 +920,27 @@ def checkout(request):
         return redirect('user_login')
 
 
+
+# ..............function for guest user..............
+def guest_user(request):
+    user = request.session['user']
+    newuser = CustomUser.objects.get(username=user)
+    if request.session.session_key:
+        guest = request.session.session_key
+        if Cart_details.objects.filter(guest_user=guest).exists():
+            guest_cart = Cart_details.objects.filter(guest_user=guest)
+            if Cart_details.objects.filter(user=newuser).exists():
+                user_cart = Cart_details.objects.filter(user=newuser)
+                for i in user_cart:
+                    if guest_cart.filter(products=i.products).exists():
+                        g = guest_cart.get(products=i.products)
+                        i.quantity += g.quantity
+                        i.save()
+                        g.delete()
+            guest_cart.update(user=newuser, guest_user="")
+
+
+
 # ..............USER LOGIN...............
 def user_login(request):
     global number
@@ -941,15 +962,21 @@ def user_login(request):
                     username = request.POST['username']
                     user = CustomUser.objects.get(username=username)
                     request.session['user'] = username
-                    number = '+91' + user.phonenumber
-                    send_otp(number)
-                    phone = number
-                    return render(request, 'app/verify.html', {'phone': phone, 'user': None})
+                    guest_user(request)
+                    return redirect('home')
+                    # number = '+91' + user.phonenumber
+                    # send_otp(number)
+                    # phone = number
+                    # return render(request, 'app/verify.html', {'phone': phone, 'user': None})
             else:
                 error = '*Please enter a correct username and password.Note that both fields may be case-sensitive'
                 return render(request, 'app/login.html', {'form': form, 'error': error, 'user': None})
     else:
         return render(request, 'app/login.html', {'form': form, 'error': error, 'user': None})
+
+
+
+
 
 
 # .............OTP VERIFICATION IN LOGIN...............
@@ -960,7 +987,9 @@ def check_otp(request):
         user = None
     if request.method == 'POST':
         if verify_otp(request.POST['otp']) == "approved":
+            guest_user()
             return redirect('home')
+            
         else:
             return render(request, 'app/verify.html', {'error': 'invalid otp', 'user': user})
     else:
