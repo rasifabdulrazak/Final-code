@@ -144,13 +144,15 @@ def add_product(request):
                 brand = request.POST['brand']
                 color = request.POST['color']
                 image = request.FILES['image']
+                imageone = request.FILES['imageone']
+                imagetwo = request.FILES['imagetwo']
                 stock = request.POST['stock']
                 category = request.POST['category']
                 offer = request.POST['product_offer']
                 discounted_price = (int(selling_price) -
                                     (int(selling_price) * int(offer) / 100))
                 Products(title=title, selling_price=selling_price, discounted_price=discounted_price, description=description,
-                         brand=brand, color=color, image=image, stock=stock, category_id=category, product_offer=offer).save()
+                         brand=brand, color=color, image=image,imageone=imageone,imagetwo=imagetwo, stock=stock, category_id=category, product_offer=offer).save()
                 return redirect('/product_management/')
         else:
             form = add_products()
