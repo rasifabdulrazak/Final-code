@@ -65,7 +65,7 @@ def show_the_wishlist(request):
         newuser = CustomUser.objects.get(username=user)
         cart_count = len(Cart_details.objects.filter(user=newuser))
         wishlist_is = wishlist.objects.filter(user=newuser)
-        return render(request, 'app/wishlist.html',{'wishlist':wishlist_is,'cart_count':cart_count})
+        return render(request, 'app/wishlist.html',{'wishlist':wishlist_is,'cart_count':cart_count,'user':user})
     else:
         if not request.session.session_key:
             request.session.create()
@@ -938,6 +938,16 @@ def guest_user(request):
                         i.save()
                         g.delete()
             guest_cart.update(user=newuser, guest_user="")
+        if wishlist.objects.filter(guest_user=guest).exists():
+            guest_wishlist = wishlist.objects.filter(guest_user=guest)
+            if wishlist.objects.filter(user=newuser).exists():
+                user_wishlist = wishlist.objects.filter(user=newuser)
+                for i in user_wishlist:
+                    if guest_wishlist.filter(wishlist_products=i.wishlist_products).exists():
+                        g = guest_wishlist.get(wishlist_products=i.wishlist_products)
+                        i.save()
+                        g.delete()
+            guest_wishlist.update(user=newuser, guest_user="")
 
 
 
@@ -947,9 +957,11 @@ def user_login(request):
     form = LoginForm(request.POST or None)
     error = None
     if request.session.has_key('user'):
-        user = request.session['user']
+        print('wiebfdlsibhdflkjsdbfkjblkjsgkljbsdfkbgdsklbgkbdsgkbj')
+        
         return redirect('home')
     elif request.method == "POST":
+        form = LoginForm(request.POST)
         if form.is_valid():
             user = authenticate(
                 username=request.POST['username'], password=request.POST['password'])
@@ -961,40 +973,53 @@ def user_login(request):
                 else:
                     username = request.POST['username']
                     user = CustomUser.objects.get(username=username)
-                    request.session['user'] = username
-                    guest_user(request)
-                    return redirect('home')
-                    # number = '+91' + user.phonenumber
-                    # send_otp(number)
-                    # phone = number
+                    request.session['num'] = user.phonenumber
+                    number = '+91' + user.phonenumber
+                    send_otp(number)
+                    phone = number
                     # return render(request, 'app/verify.html', {'phone': phone, 'user': None})
+                    return redirect('/check_otp')
             else:
                 error = '*Please enter a correct username and password.Note that both fields may be case-sensitive'
-                return render(request, 'app/login.html', {'form': form, 'error': error, 'user': None})
+        return render(request, 'app/login.html', {'form': form, 'error': error, 'user': None})
     else:
         return render(request, 'app/login.html', {'form': form, 'error': error, 'user': None})
 
+# def otp_login(request):
+#     if request.method =="POST":
+#         number = request.POST['mobilenumber']
+#         user = authenticate(
+#                 phonenumber = number)
+#         if user is not None:
+#             pass
 
+
+    
 
 
 
 
 # .............OTP VERIFICATION IN LOGIN...............
 def check_otp(request):
-    if request.session.has_key('user'):
-        user = request.session['user']
-    else:
-        user = None
+    user = None
     if request.method == 'POST':
-        if verify_otp(request.POST['otp']) == "approved":
-            guest_user()
+        print(request.POST['otp'])
+        print('---------------------------------')
+
+        print(request.session['num'])
+
+        if verify_otp(request.POST['otp'], request) == "approved":
+            u = CustomUser.objects.get(phonenumber=request.session['num'])
+            request.session['user'] = u.username
+            del request.session['num']
+            guest_user(request)
             return redirect('home')
             
         else:
-            return render(request, 'app/verify.html', {'error': 'invalid otp', 'user': user})
+            return render(request, 'app/verify.html', {'error': 'invalid otp','user':user})
     else:
-        return render(request, 'app/verify.html', {'user': user})
-    return render(request, 'app/verify.html', {'user': user})
+        return render(request, 'app/verify.html',{'user':user})
+    return render(request, 'app/verify.html',{'user':user})
 
 
 # ..............USER REGISTRATION.............
@@ -1009,7 +1034,8 @@ def user_registration(request):
             number = '+91' + request.POST['phonenumber']
             if send_otp(number):
                 phone = number
-                return render(request, 'app/otp.html', {'phone': phone, 'user': None})
+                request.session['num'] = request.POST['phonenumber']
+                return redirect('/check_otp')
             else:
                 return render(request, 'app/customerregistration.html', {'form': form, 'message': "Please enter a valid phonenumber", 'user': None})
         else:
@@ -1027,7 +1053,7 @@ def otp(request):
     else:
         user = None
     if request.method == 'POST':
-        if verify_otp(request.POST['otp']) == "approved":
+        if verify_otp(request.POST['otp'], request) == "approved":
             form.save()
             form = LoginForm()
             message = 'Succesfully Registered,Now login'
