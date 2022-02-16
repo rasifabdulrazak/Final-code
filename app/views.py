@@ -37,6 +37,14 @@ client = razorpay.Client(
 
 
 
+def buy_now_invoice(request):
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        pro_list = order_placed.objects.all().last()
+        return render(request,'app/buynowinvoice.html',{'prolist':pro_list})
+
+
 
 # ...........add to wishlist.............
 def add_to_wishlist(request,pk):
@@ -143,6 +151,7 @@ def payment(request, mode):
             custid = request.GET.get('custid')
             adress = User_details.objects.get(id=custid)
             cart = Cart_details.objects.filter(user=newuser)
+            listproduct = []
             if request.session.has_key('coupon'):
                 couponcode = Coupon.objects.get(
                     coupen_code=request.session['coupon'])
@@ -157,9 +166,9 @@ def payment(request, mode):
                     product = cart.products
                     Products.objects.filter(
                         title=product).update(stock=c)
-                    listproduct.append(orders)
+                listproduct.append(orders)
                 del request.session['coupon']
-                return render(request,'app/invoice.html',{'listproduct':listproduct})
+                return render(request,'app/invoice.html',{'listproduct':listproduct,'user':user})
             else:
                 for cart in cart:
                     sub = cart.quantity*cart.products.discounted_price
@@ -171,8 +180,8 @@ def payment(request, mode):
                     product = cart.products
                     Products.objects.filter(
                         title=cart.products).update(stock=c)
-                    listproduct.append(orders)
-                return render(request,'app/invoice.html',{'listproduct':listproduct})
+                listproduct.append(orders)
+                return render(request,'app/invoice.html',{'listproduct':listproduct,'user':user})
         except:
             return redirect('checkout')
     else:
@@ -208,7 +217,7 @@ def buy_now_payment(request, mode, pk):
                 Products.objects.filter(title=product.title).update(stock=c)
                 value_list.append(orders)
                 del request.session['buycoupon']
-                return render(request,'app/buynowinvoice.html',{'value_list':value_list})
+                return redirect('invoice')
             else:
                 orders = order_placed(user=newuser, adress=adress, product=product,
                                       quantity=1, sub_total=totalamount, mode_of_payment=mode_of_payment[mode])
@@ -216,8 +225,7 @@ def buy_now_payment(request, mode, pk):
                 c = product.stock - 1
                 Products.objects.filter(title=product.title).update(stock=c)
                 value_list.append(orders)
-                print("((((((((((((((((((((((")
-                return render(request,'app/buynowinvoice.html',{'value_list':value_list})
+            return redirect('invoice')
         except:
             return redirect('buynow')
     else:
@@ -863,7 +871,7 @@ def earpodes(request, data=None):
         elif data == "between":
             products = Products.objects.filter(
                 category=1, discounted_price__range=(5000, 10000))
-        return render(request, 'app/earpods.html', {'products': products, 'user': user,'cart_product':cart_product})
+        return render(request, 'app/earpods.html', {'products': products, 'user': user,'cart_product':cart_product,'wish_product':wish_product})
 
 
 # .................CHECKOUT PAGE..................
@@ -1035,7 +1043,7 @@ def user_registration(request):
             if send_otp(number):
                 phone = number
                 request.session['num'] = request.POST['phonenumber']
-                return redirect('/check_otp')
+                return redirect('/otp')
             else:
                 return render(request, 'app/customerregistration.html', {'form': form, 'message': "Please enter a valid phonenumber", 'user': None})
         else:
@@ -1053,7 +1061,7 @@ def otp(request):
     else:
         user = None
     if request.method == 'POST':
-        if verify_otp(request.POST['otp'], request) == "approved":
+        if verify_the_otp(request.POST['otp']) == "approved":
             form.save()
             form = LoginForm()
             message = 'Succesfully Registered,Now login'

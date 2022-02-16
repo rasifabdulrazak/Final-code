@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
 
     path('', views.home, name='home'),
-    path('invoice/',views.invoice,name='invoice'),
+    path('invoice/',views.buy_now_invoice,name='invoice'),
     path('add_to_wishlist/<int:pk>/', views.add_to_wishlist, name='add_to_wishlist'),
     path('show_wishlist/', views.show_the_wishlist, name='show_wishlist'),
     path('remove_wishlist/<int:id>/',views.remove_from_wishlist,name='remove_wishlist'),

@@ -36,42 +36,8 @@
     <div class="text-center text-primary fw-bold"><small>New to Eshopee ? <a href="{% url 'user_registration' %}"
        class="text-danger">Create an Account</a> </small></div>
    </form>
-   <div class="text-center mt-2">
-      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
-         Otp Login
-       </button>
-       
-       <!-- Modal -->
-       <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-           <div class="modal-content">
-             <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLabel">OTP LOGIN</h5>
-               <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                 <span aria-hidden="true">&times;</span>
-               </button>
-             </div>
-             <div class="modal-body">
-                 <form action="{% url 'coupon' %}" method="post" name="myForm">
-                  {% csrf_token %}
-                  <div class="form-group text-center">
-                     <label for="exampleInputPassword1">Phonenumber</label>
-                     <input type="number" class="form-control" id="exampleInputPassword1" placeholder="Enter 10 digit phonenumber" name="mobilenumber" required maxlength="10" minlength="10">
-                   </div>
-             </div>
-             <div class="modal-footer">
-               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-               <button type="submit" class="btn btn-primary">Get otp</button>
-             </form>
-             </div>
-           </div>
-         </div>
-       </div>
-      </div>
    </div>
   </div>
  </div>
 </div>
-<script>
-
 {% endblock main-content %}

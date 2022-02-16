@@ -22,12 +22,11 @@
                     </div> <br />
              
                     <div class="row">
-                        {% for i in value_list %}
                         <div class="col-md-12 text-center">
                             <h2>INVOICE</h2>
-                            <h5>{{i.user.phonenumber}}</h5>
+                            <h5>{{prolist.user.phonenumber}}</h5>
                         </div>
-                        {% endfor %}
+                      
                     </div> <br />
                     <div>
                         <table class="table">
@@ -42,12 +41,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for i in value_list %}
+                   
                                 <tr>
-                                    <td class="col-md-9">{{i.product}} ({{i.quantity}})</td>
-                                    <td class="col-md-3"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{i.product.discounted_price}} </td>
+                                    <td class="col-md-9">{{prolist.product}} ({{prolist.quantity}})</td>
+                                    <td class="col-md-3"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{prolist.product.discounted_price}} </td>
                                 </tr>
-                                {% endfor %}
+                    
                                 <!-- <tr>
                                     <td class="col-md-9">JBL Bluetooth Speaker</td>
                                     <td class="col-md-3"><i class="fas fa-rupee-sign" area-hidden="true"></i> 5,200 </td>
@@ -60,22 +59,20 @@
                                     <td class="col-md-9">MI Smartwatch 2</td>
                                     <td class="col-md-3"><i class="fas fa-rupee-sign" area-hidden="true"></i> 2,200 </td>
                                 </tr> -->
-                                {% for i in value_list %}
-                                {% if forloop.last %}
                                 <tr>
                                     <td class="text-left">
                                         <p> <strong>Shipped To:</strong> </p>
-                                        <p> <span>{{i.user.first_name}} </span> </p>
-                                        <p> <span>{{i.adress.locality}} </span> </p>
-                                        <p> <span>{{i.adress.city}} </span> </p>
-                                        <p> <span>{{i.adress.pincode}}</span> </p>
-                                        <p> <span>{{i.adress.state}}</span> </p>
+                                        <p> <span>{{prolist.user.first_name}} </span> </p>
+                                        <p> <span>{{prolist.adress.locality}} </span> </p>
+                                        <p> <span>{{prolist.adress.city}} </span> </p>
+                                        <p> <span>{{prolist.adress.pincode}}</span> </p>
+                                        <p> <span>{{prolist.adress.state}}</span> </p>
                                     </td>
                                     <td class="">
                                         <p> <strong>Shipment and Taxes: <i class="fas fa-rupee-sign" area-hidden="true"></i>90 </strong> </p>
-                                        <p> <strong>Total Amount:{{i.sub_total}} </strong> </p>
-                                        <p> <strong>Discount:{{i.coupon.coupen_code}} </strong> </p>
-                                        <p> <strong>Payable Amount:{{i.sub_total}} </strong> </p>
+                                        <p> <strong>Total Amount:{{prolist.sub_total}} </strong> </p>
+                                        <p> <strong>Discount:{{prolist.coupon.discount}} %</strong> </p>
+                                        <p> <strong>Payable Amount:{{prolist.sub_total}} </strong> </p>
                                     </td>
                                     <!-- <td>
                                         <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> 500 </strong> </p>
@@ -90,22 +87,19 @@
                                         <h4><strong>Total:</strong></h4>
                                     </td>
                                     <td class="text-left">
-                                        <h4><strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{i.sub_total}} </strong></h4>
+                                        <h4><strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{prolist.sub_total}} </strong></h4>
                                     </td>
                                 </tr>
-                                {% endif %}
-                                {% endfor %}
+                        
                             </tbody>
                            
                         </table>
                     </div>
                     <div>
                         <div class="col-md-12">
-                            {% for i in value_list %}
-                                {% if forloop.last %}
-                            <p><b>Date :</b>{{i.orderdate}}</p> <br />
-                            {% endif %}
-                                {% endfor %}
+                          
+                            <p><b>Date :</b>{{prolist.orderdate}}</p> <br />
+                         
                         </div>
                     </div>
                 </div>
