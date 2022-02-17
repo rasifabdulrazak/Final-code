@@ -43,8 +43,9 @@ def buy_now_invoice(request):
     if request.session.has_key('user'):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
+        cart_count = len(Cart_details.objects.filter(user=newuser))
         pro_list = order_placed.objects.all().last()
-        return render(request,'app/buynowinvoice.html',{'prolist':pro_list})
+        return render(request,'app/buynowinvoice.html',{'prolist':pro_list,'cart_count':cart_count})
     else:
         return redirect('user_login')
 
@@ -163,7 +164,7 @@ def payment(request, mode):
                     sub = cart.quantity*cart.products.discounted_price + 90
                     price = int(sub - (sub*couponcode.discount/100))
                     orders = order_placed(user=newuser, adress=adress, product=cart.products, quantity=cart.quantity,
-                                          sub_total=sub, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
+                                          sub_total=price, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
                     orders.save()
                     count = count+1
                     cart.delete()
@@ -175,7 +176,7 @@ def payment(request, mode):
                 return redirect('/invoice/'+str(count))
             else:
                 for cart in cart:
-                    sub = cart.quantity*cart.products.discounted_price
+                    sub = cart.quantity*cart.products.discounted_price + 90
                     orders = order_placed(user=newuser, adress=adress, product=cart.products,
                                           quantity=cart.quantity, sub_total=sub, mode_of_payment=mode_of_payment[mode])
                     orders.save()
@@ -202,6 +203,7 @@ def invoice(request,count):
         user=order[0].user
         coupen = order[0].coupon
         date = order[0].orderdate
+        mode = order[0].mode_of_payment
         total = order.aggregate(Sum('sub_total'))
         context = {
             'order':order,
@@ -210,6 +212,7 @@ def invoice(request,count):
             'user':user,
             'coupen':coupen,
             'date':date,
+            'mode':mode,
         }
         return render(request,'app/invoice.html',context)
 
@@ -714,6 +717,27 @@ def address(request):
         return redirect('user_login')
 
 
+
+def edit_adress(request,id):
+    if request.session.has_key('user'):
+        user = request.session['user']    
+        newuser = CustomUser.objects.get(username=user)
+        cart_count = len(Cart_details.objects.filter(user=newuser))
+        adress = User_details.objects.get(id = id)
+        form = User_detail(instance = adress)
+        if request.method == "POST":
+            form = User_detail(instance = adress)
+            locality = request.POST['locality']
+            city = request.POST['city']
+            pincode = request.POST['pincode']
+            state = request.POST['state']
+            User_details.objects.filter(id=id,user=newuser).update(locality=locality, city=city, pincode=pincode, state=state)
+            return redirect('address')
+        return render(request, 'app/edit_adress.html', {'user': user, 'form': form, 'active': 'btn-primary', 'cart_count': cart_count})
+
+
+
+
 # ...............DELETING ADRESS.............
 @never_cache
 def delete_adress(request, pk):
@@ -997,8 +1021,6 @@ def user_login(request):
     form = LoginForm(request.POST or None)
     error = None
     if request.session.has_key('user'):
-        print('wiebfdlsibhdflkjsdbfkjblkjsgkljbsdfkbgdsklbgkbdsgkbj')
-        
         return redirect('home')
     elif request.method == "POST":
         form = LoginForm(request.POST)
@@ -1017,25 +1039,12 @@ def user_login(request):
                     number = '+91' + user.phonenumber
                     send_otp(number)
                     phone = number
-                    # return render(request, 'app/verify.html', {'phone': phone, 'user': None})
                     return redirect('/check_otp')
             else:
                 error = '*Please enter a correct username and password.Note that both fields may be case-sensitive'
         return render(request, 'app/login.html', {'form': form, 'error': error, 'user': None})
     else:
         return render(request, 'app/login.html', {'form': form, 'error': error, 'user': None})
-
-# def otp_login(request):
-#     if request.method =="POST":
-#         number = request.POST['mobilenumber']
-#         user = authenticate(
-#                 phonenumber = number)
-#         if user is not None:
-#             pass
-
-
-    
-
 
 
 
@@ -1062,6 +1071,7 @@ def check_otp(request):
     return render(request, 'app/verify.html',{'user':user})
 
 
+
 # ..............USER REGISTRATION.............
 def user_registration(request):
     global form, number
@@ -1085,6 +1095,7 @@ def user_registration(request):
         return render(request, 'app/customerregistration.html', {'form': form, 'user': None})
 
 
+
 # ..............OTP VERIFICATION IN REGISTRATION................
 def otp(request):
     global form
@@ -1101,6 +1112,7 @@ def otp(request):
         else:
             return render(request, 'app/otp.html', {'error': 'invalid otp', 'user': user})
     return render(request, 'app/otp.html', {'user': user})
+
 
 
 # ............USER LOGOUT.................

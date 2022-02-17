@@ -338,6 +338,7 @@ def remove_product_offer(request, pk):
         return redirect('admin_login')
 
 
+
 # ...............Applying Offer for Category...............
 def category_offer(request):
     if request.session.has_key('admin'):
@@ -359,6 +360,7 @@ def category_offer(request):
         return redirect('admin_login')
 
 
+
 # ............removing category offer................
 def remove_category_offer(request, pk):
     if request.session.has_key('admin'):
@@ -368,6 +370,7 @@ def remove_category_offer(request, pk):
         return redirect('category-offer')
     else:
         return redirect('admin_login')
+
 
 
 # ............setting coupon.....................

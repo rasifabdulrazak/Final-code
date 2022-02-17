@@ -58,7 +58,7 @@ class coupon(forms.ModelForm):
     coupen_code = forms.CharField(label='Coupen Code', max_length=6, required=True, widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Enter the Coupon Code'}))
     discount = forms.IntegerField(label='Discount in %', required=True, widget=forms.TextInput(
-        attrs={'min': 1, 'max': '100', 'type': 'number', 'placeholder': 'Enter the Coupon Offer'}))
+        attrs={'min': 1, 'max': '90', 'type': 'number', 'placeholder': 'Enter the Coupon Offer'}))
 
     class Meta:
         model = Coupon

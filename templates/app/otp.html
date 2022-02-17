@@ -16,7 +16,9 @@
                     {% csrf_token %}
                 <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2"> <input name='otp' class="m-2 text-center form-control rounded" type="number" placeholder="Enter the otp" id="input1" v-on:keyup="inputenter(4)" maxlength="4" /> </div>
                 <div class="mt-4"> <button type="submit" class="btn btn-danger px-4 ">Submit</button> </div>
+                <p id="timer">otp will resend in <p id="resend"></p></p>
                 </form>
+                <a href=""><button id="resend_otp" class="btn btn-info text-center" style="display: none;">Resend</button></a>
             </div>
         </div>
     </div>
@@ -30,5 +32,36 @@ function validateForm() {
     return false;
   }
 }
+</script>
+<script>
+    var min = 1
+    sec = 30
+    function refresh() {
+
+         if (sec == 0 && min >= 1) {
+              min = min - 1
+              sec = 59
+         }
+         if (sec != 0) {
+              setTimeout(refresh, 1000)
+              sec -= 1
+              if(sec<10){
+                $("#resend").html('  0' + min + ' : ' + sec)
+              }
+              else{
+                 $("#resend").html('  0' + min + ' : ' + sec)
+              }
+         } else {
+              document.getElementById("resend_otp").style.display='block';
+              document.getElementById("timer").style.display='block';
+              document.getElementById("resend").style.display='block';
+            //   $("#customise-resend").removeClass('bg-light')
+            //   $("#customise-resend").removeClass('text-dark')
+            //   $("#customise-resend").addClass('bg-primary')
+            //   $("#customise-resend").addClass('text-light')
+            //   $("#customise-resend").html("Resend OTP")
+         }
+    }
+    refresh()
 </script>
 {% endblock main-content %}
