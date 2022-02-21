@@ -78,7 +78,8 @@ def show_the_wishlist(request):
         newuser = CustomUser.objects.get(username=user)
         cart_count = len(Cart_details.objects.filter(user=newuser))
         wishlist_is = wishlist.objects.filter(user=newuser)
-        return render(request, 'app/wishlist.html',{'wishlist':wishlist_is,'cart_count':cart_count,'user':user})
+        cart_product = [i.products for i in Cart_details.objects.filter(user = newuser)]
+        return render(request, 'app/wishlist.html',{'wishlist':wishlist_is,'cart_count':cart_count,'user':user,'cart_product':cart_product})
     else:
         if not request.session.session_key:
             request.session.create()
@@ -86,7 +87,8 @@ def show_the_wishlist(request):
         user = None
         cart_count = len(Cart_details.objects.filter(guest_user=session_key))
         wishlist_is = wishlist.objects.filter(guest_user=session_key)
-        return render(request, 'app/wishlist.html',{'wishlist':wishlist_is,'cart_count':cart_count,'user':user})
+        cart_product = [i.products for i in Cart_details.objects.filter(guest_user=session_key)]
+        return render(request, 'app/wishlist.html',{'wishlist':wishlist_is,'cart_count':cart_count,'user':user,'cart_product':cart_product})
 
 
 
