@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}Buy Now{% endblock title %}
 {% block main-content %}
+{% load crispy_forms_tags %}
 <div>
 <div class="container">
   <div class="row mt-5">
@@ -54,6 +55,7 @@
       <hr>
 
       {% csrf_token %}
+      {% if adress %}
       {% for add in adress %}
       <div class="card">
         <div class="card-body">
@@ -62,6 +64,7 @@
             {{add.city}},
             {{add.pincode}},
             {{add.state}}</p>
+            <a href="{% url 'edit_adress' add.id %}"><i class="fa fa-edit" title="Edit adress"></i></a>
         </div>
         </div>
         <form action="{% url 'buy_now_payment' product.id 1  %}">
@@ -71,6 +74,13 @@
             Address: {{forloop.counter}} </label>
         </div>
       {% endfor %}
+      {% else %}
+      <form action="{% url 'add_adress' %}" method="post">
+        {% csrf_token %}
+      <div>{{form|crispy}}</div>
+      <button class="btn btn-info" type="submit">Add</button>
+      </form>
+      {% endif %}
         Mode of payment:
         <div class="text-center mt-2">
           <!-- Button trigger modal -->

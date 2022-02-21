@@ -9,7 +9,7 @@ from django.views.decorators.cache import never_cache
 import django_filters
 from django_filters import DateFilter
 from datetime import datetime
-
+from datetime import date
 # ...............admin-login..............
 
 
@@ -53,6 +53,7 @@ def admin_dashboard(request):
         products = Products.objects.count()
         category = Category.objects.all()
         orders = order_placed.objects.count()
+        report = order_placed.objects.all()
         no_of_category = category.count()
         report_month = order_placed.objects.values('orderdate__month', 'orderdate__day', 'orderdate__year').filter(
             status='Delivered').annotate(Sum('sub_total')).order_by('-orderdate__month')[:7]
@@ -79,6 +80,7 @@ def admin_dashboard(request):
             'product_brand': product_brand,
             'user_order': user_order,
             'profit_loss': profit_loss,
+            'report':report,
         }
         return render(request, 'dashboard/index.html', context)
     else:
@@ -306,6 +308,7 @@ def edit_status(request, pk):
         return redirect('admin_login')
 
 
+
 # .........Applying offer for product...............
 def product_offer(request):
     if request.session.has_key('admin'):
@@ -386,7 +389,7 @@ def coupen(request):
                 return render(request, 'dashboard/coupons.html', {'coupons': coupons, 'form': form})
         else:
             form = coupon()
-            return render(request, 'dashboard/coupons.html', {'coupons': coupons, 'form': form})
+            return render(request, 'dashboard/coupons.html', {'coupons': coupons, 'form': form,'coupon_list':coupon_list})
     else:
         return redirect('admin_login')
 

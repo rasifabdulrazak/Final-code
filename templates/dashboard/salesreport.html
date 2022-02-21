@@ -66,37 +66,55 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title fw-bold">Products Selled</h5>
-                                <!-- <form action="" method="post">
+                                <div class="row">
+                                <form action="{% url 'daily_report' %}" method="post">
                                     {% csrf_token %}
-                                <div class="col-md-3 text-center mb-4 mt-1">
-                                <div><p>from :</p>  <input class="form-control" type="date" name="form"></div>
-                                <div><p>To :</p> <input class="form-control" type="date" name="to"></div>
+                                <div class="col-md-12 text-center mb-4 mt-1">
+                                <div><p>From:</p><input class="form-control" type="date" name="from"></div>
+                                <div><p>To:</p><input class="form-control" type="date" name="to"></div>
                                 <button class="btn btn-success form-control" type="submit">Search</button>
                                 </div>
-                            </form> -->
+                            </form>
+                            <form action="{% url 'monthly_report' %}" method="post">
+                                {% csrf_token %}
+                            <div class="col-md-12 text-center mb-4 mt-1">
+                            <div><p>Monthly Reports</p><input class="form-control" type="month" name="month"></div>
+                            <button class="btn btn-success form-control" type="submit">Search</button>
+                            </div>
+                        </form>
+                        <form action="{% url 'yearly_report' %}" method="post">
+                            {% csrf_token %}
+                        <div class="col-md-12 text-center mb-4 mt-1">
+                        <div><p>Yearly Reports</p><input class="form-control" type="text" name="year" placeholder="Enter the year"></div>
+                        <button class="btn btn-success form-control" type="submit">Search</button>
+                        </div>
+                    </form>
+                        </div>
 
                             <!-- ...........paste the table here............... -->
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     
                                     <tr>
-                                        <th>BrandName</th>
+                                        <th>Product</th>
                                         <th>Quantity Sold</th>
                                         <th>Date</th>
-                                        <th>Income of Delivered orders</th>
+                                        <th>Price</th>
+                                        <th>payment</th>
+                                        
                                         <!-- <th>Start date</th>
                                         <th>Salary</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for sale in sales %}
+                                    {% for sale in report %}
                                     <tr>
-                                        <td>{{sale.product__brand}}</td>
-                                        <td>{{sale.quantity__count}}</td>
-                                        <td>{{sale.orderdate__day}}/{{sale.orderdate__month}}/{{sale.orderdate__year}}</td>
-                                        <td>{{sale.sub_total__sum}}</td>
-                                        <!-- <td>2011/04/25</td>
-                                        <td>$320,800</td> -->
+                                        <td>{{sale.product}}</td>
+                                        <td>{{sale.quantity}}</td>
+                                        <td>{{sale.orderdate}}</td>
+                                        <td>{{sale.sub_total}}</td>
+                                        <td>{{sale.mode_of_payment}}</td>
+    
                                     </tr>    
                                     {% endfor %}                  
                                 </tbody>
@@ -108,72 +126,10 @@
                 <!-- ============================================================== -->
                 <!-- Sales chart -->
                 <!-- ============================================================== -->
-                <div class="row text-center">
-                    <div class="col-md-6 col-lg-4 col-xlg-3">
-                        <div class="card card-hover" id="second" style="cursor: pointer;">
-                            <div class="box bg-primary text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-download"></i></h1>
-                                <h6 class="text-white">Download PDF</h6>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="col-md-6 col-lg-4 col-xlg-3">
-                        <a href="#"><div class="card card-hover">
-                            <div class="box bg-success text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-download"></i></h1>
-                                <h6 class="text-white">Download ExcelSheet</h6>
-                            </div>
-                        </div></a>
-                    </div>
-                    <div class="col-md-6 col-lg-4 col-xlg-3">
-                        <a href="{% url 'export_to_csv' %}"><div class="card card-hover">
-                            <div class="box bg-secondary text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-download"></i></h1>
-                                <h6 class="text-white">Download CSV</h6>
-                            </div>
-                        </div></a>
-                    </div>
-                </div>
-
-
-
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                
-                                    <h5 class="card-title fw-bold">Daily Income</h5>
                                 
                             <!-- ...........paste the table here............... -->
-                            <table id="example12" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                    
-                                    <tr>
-                                    
-                                        <th>No.of.products Delivered</th>
-                                        <th>Date</th>
-                                        <th>Income of Delivered orders</th>
                                         <!-- <th>Start date</th>
                                         <th>Salary</th> -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for daily in daily_income %}
-                                    <tr>
-                                        <td>{{daily.quantity__count}}</td>
-                                        <td>{{daily.orderdate__day}}/{{daily.orderdate__month}}/{{daily.orderdate__year}}</td>
-                                        <td>{{daily.sub_total__sum}}</td>
-                                       
-                                    </tr>    
-                                    {% endfor %}                  
-                                </tbody>
-                            </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- ============================================================== -->
                 <!-- Recent comment and chats -->
                 <!-- ============================================================== -->

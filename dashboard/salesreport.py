@@ -20,14 +20,80 @@ def sales_report(request):
             status='Delivered').annotate(Count('quantity'), Sum('sub_total'))
         daily_income = order_placed.objects.values('orderdate__day', 'orderdate__month', 'orderdate__year').filter(
             status='Delivered').annotate(Count('quantity'), Sum('sub_total'))
+        report = order_placed.objects.all()
         context = {
             'sales': sales,
             'daily_income': daily_income,
+            'report':report,
         }
         return render(request, 'dashboard/salesreport.html', context)
     else:
         return redirect('admin_login')
 
+
+
+@never_cache
+def month_report(request):
+    if request.session.has_key('admin'):
+        if request.method == "POST":
+            month_report = request.POST['month']
+            print(month_report)
+            if month_report!='':
+                month = month_report.split('-')
+                report = order_placed.objects.filter(orderdate__month = month[1],orderdate__year = month[0]).order_by('-orderdate')
+            else:
+                report = order_placed.objects.all().order_by('-orderdate')
+            return render(request, 'dashboard/salesreport.html',{'report':report})
+    else:
+        return redirect('admin_login')
+
+
+@never_cache
+def year_report(request):
+    if request.session.has_key('admin'):
+        if request.method == "POST":
+            year = int(request.POST['year'])
+            if year!='':
+                report = order_placed.objects.filter(orderdate__year = year).order_by('-orderdate')
+            else:
+                report = order_placed.objects.all().order_by('-orderdate')
+            return render(request, 'dashboard/salesreport.html',{'report':report})
+    else:
+        return redirect('admin_login')
+
+
+
+# For searching sales based on date
+@never_cache
+def daily_report(request):
+    if request.session.has_key('admin'):
+        if request.method == 'POST':
+            fromdate = request.POST['from']
+            to = request.POST['to']
+            if to != '':
+                setto = to.split('-')
+                if (int(setto[2])+1) < 10:
+                    setto[2] = '0'+str(int(setto[2])+1)
+                else:
+                    setto[2] = str(int(setto[2])+1)
+                todate = '-'.join(setto)
+            else:
+                todate = ''
+            request.session['fromdate'] = fromdate
+            request.session['todate'] = todate
+            if fromdate == '' and todate == '':
+                report = order_placed.objects.all().order_by('-orderdate')
+            elif fromdate == '':
+                report = order_placed.objects.filter(orderdate__lt=todate).order_by('-orderdate')
+            elif todate == '':
+                report = order_placed.objects.filter(
+                    orderdate__gte=fromdate).order_by('-orderdate')
+            else:
+                report = order_placed.objects.filter(
+                    orderdate__range=[fromdate, todate]).order_by('-orderdate')
+            return render(request, 'dashboard/salesreport.html', {'report': report})
+    else:
+        return redirect('admin_login')
 
 # ...........exporting sales report to csv format..............
 @never_cache

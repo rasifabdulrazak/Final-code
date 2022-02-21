@@ -37,5 +37,8 @@ urlpatterns = [
     path('delete_coupon/<int:pk>', views.delete_coupon, name='delete-coupon'),
     path('export_to_csv/', salesreport.export_to_csv, name='export_to_csv'),
     path('export_to_excel/', salesreport.export_to_excel, name='export_to_excel'),
+    path('monthly_report/', salesreport.month_report, name='monthly_report'),
+    path('yearly_report/', salesreport.year_report, name='yearly_report'),
+    path('daily_report/', salesreport.daily_report, name='daily_report'),
 
 ]

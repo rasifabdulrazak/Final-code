@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}Checkout{% endblock title %}
 {% block main-content %}
+{% load crispy_forms_tags %}
 <div>
 <div class="container">
   <div class="row mt-5">
@@ -60,7 +61,9 @@
             {{add.city}},
             {{add.pincode}},
             {{add.state}}</p>
+            <a href="{% url 'edit_adress' add.id %}"><i class="fa fa-edit" title="Edit adress"></i></a>
         </div>
+        
         </div>
         <form action="{% url 'payment' 1 %}">
           {% csrf_token %}
@@ -71,7 +74,11 @@
         </div>
       {% endfor %}
       {% else %}
-      <div>Please create an adress</div>
+      <form action="{% url 'add_adress' %}" method="post">
+        {% csrf_token %}
+      <div>{{form|crispy}}</div>
+      <button class="btn btn-info" type="submit">Add</button>
+      </form>
       {% endif %}
         Mode of payment:
         <div class="text-center mt-2">

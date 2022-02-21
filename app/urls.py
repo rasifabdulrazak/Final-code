@@ -8,6 +8,9 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
 
     path('', views.home, name='home'),
+    path('add_adress', views.add_adress, name='add_adress'),
+    path('resend_otp/', views.resend_otp, name='resend_otp'),
+    path('resend_reg_otp/', views.resend_reg_otp, name='resend_reg_otp'),
     path('buy_now_invoice/',views.buy_now_invoice,name='buy_now_invoice'),
     path('edit_adress/<int:id>/',views.edit_adress,name='edit_adress'),
     path('invoice/<int:count>/',views.invoice,name='invoice'),

@@ -198,6 +198,7 @@ def invoice(request,count):
     if request.session.has_key('user'):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
+        cart_count = len(Cart_details.objects.filter(user=newuser))
         order = order_placed.objects.filter(user = newuser).order_by('-orderdate')[:c]
         addr=order[0].adress
         user=order[0].user
@@ -213,6 +214,7 @@ def invoice(request,count):
             'coupen':coupen,
             'date':date,
             'mode':mode,
+            'cart_count': cart_count,
         }
         return render(request,'app/invoice.html',context)
 
@@ -235,7 +237,6 @@ def buy_now_payment(request, mode, pk):
                 couponcode = Coupon.objects.get(
                     coupen_code=request.session['buycoupon'])
                 sub = int(totalamount - (totalamount*couponcode.discount/100))
-                print(sub)
                 orders = order_placed(user=newuser, adress=adress, product=product, quantity=1,
                                       sub_total=sub, mode_of_payment=mode_of_payment[mode], coupon=couponcode)
                 orders.save()
@@ -299,7 +300,6 @@ def home(request):
         cart_count = len(Cart_details.objects.filter(user=newuser))
         wired = Products.objects.filter(category_id=3)
         wireless = Products.objects.filter(category_id=2)
-        print(wired)
         earpodes = Products.objects.filter(category_id=1)
         products = Products.objects.all()
         wish_product = [i.wishlist_products for i in wishlist.objects.filter(user = newuser)]
@@ -644,6 +644,7 @@ def buy_now(request, pk):
         cart_count = len(Cart_details.objects.filter(user=newuser))
         adress = User_details.objects.filter(user=newuser)
         product = Products.objects.get(pk=pk)
+        form = User_detail(request.POST or None, request.FILES or None)
         codes = Coupon.objects.all()
         product.quantity = 1
         amount = 0.0
@@ -675,7 +676,8 @@ def buy_now(request, pk):
             "amount": int(total_amount)*100,
             'cart_count': cart_count,
             'codes': codes,
-            'message': message
+            'message': message,
+            'form':form,
         }
         return render(request, 'app/buynow.html', context)
     return redirect('user_login')
@@ -937,6 +939,7 @@ def checkout(request):
         user = request.session['user']
         couponcode = request.GET.get('couponcode')
         message = None
+        form = User_detail(request.POST or None, request.FILES or None)
         newuser = CustomUser.objects.get(username=user)
         cart_count = len(Cart_details.objects.filter(user=newuser))
         adress = User_details.objects.filter(user=newuser)
@@ -978,11 +981,29 @@ def checkout(request):
             'codes': codes,
             'couponcode': couponcode,
             'message': message,
+            'form':form,
         }
         return render(request, 'app/checkout.html', context)
     else:
         return redirect('user_login')
 
+
+def add_adress(request):
+    form = User_detail(request.POST or None, request.FILES or None)
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        cart_count = len(Cart_details.objects.filter(user=newuser))
+        if request.method == 'POST':
+            if form.is_valid():
+                locality = form.cleaned_data['locality']
+                city = form.cleaned_data['city']
+                pincode = form.cleaned_data['pincode']
+                state = form.cleaned_data['state']
+                save = User_details(
+                    user=newuser, locality=locality, city=city, pincode=pincode, state=state)
+                save.save()
+                return redirect('checkout')
 
 
 # ..............function for guest user..............
@@ -1048,22 +1069,25 @@ def user_login(request):
 
 
 
+# for resending otp while login.............
+def resend_otp(request):
+    if request.session.has_key('num'):
+        number = '+91' + request.session['num']
+        send_otp(number)
+        return redirect('/check_otp')
+
+
+
 # .............OTP VERIFICATION IN LOGIN...............
 def check_otp(request):
     user = None
     if request.method == 'POST':
-        print(request.POST['otp'])
-        print('---------------------------------')
-
-        print(request.session['num'])
-
         if verify_otp(request.POST['otp'], request) == "approved":
             u = CustomUser.objects.get(phonenumber=request.session['num'])
             request.session['user'] = u.username
             del request.session['num']
             guest_user(request)
             return redirect('home')
-            
         else:
             return render(request, 'app/verify.html', {'error': 'invalid otp','user':user})
     else:
@@ -1082,9 +1106,10 @@ def user_registration(request):
         form = CustomerRegistrationForm(request.POST)
         if form.is_valid():
             number = '+91' + request.POST['phonenumber']
+            request.session['numb'] = number
             if send_otp(number):
                 phone = number
-                request.session['num'] = request.POST['phonenumber']
+                request.session['numb'] 
                 return redirect('/otp')
             else:
                 return render(request, 'app/customerregistration.html', {'form': form, 'message': "Please enter a valid phonenumber", 'user': None})
@@ -1093,6 +1118,14 @@ def user_registration(request):
     else:
         form = CustomerRegistrationForm()
         return render(request, 'app/customerregistration.html', {'form': form, 'user': None})
+
+
+def resend_reg_otp(request):
+    if request.session.has_key('numb'):
+        number = request.session['numb'] 
+        send_otp(number)
+        return redirect('/otp')
+
 
 
 

@@ -26,6 +26,7 @@ def send_otp(number):
         return False
 
 
+        
 # ............verifying otp.............
 def verify_otp(otp, request):
     account_sid = os.environ['TWILIO_ACCOUNT_SID'] = TWILIOACCOUNTSID

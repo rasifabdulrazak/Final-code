@@ -18,7 +18,7 @@
                 <div class="mt-4"> <button type="submit" class="btn btn-danger px-4 ">Submit</button> </div>
                 <p id="timer">otp will resend in <p id="resend"></p></p>
                 </form>
-                <a href=""><button id="resend_otp" class="btn btn-info text-center" style="display: none;">Resend</button></a>
+                <a href="{% url 'resend_reg_otp' %}"><button id="resend_otp" class="btn btn-info text-center" style="display: none;">Resend</button></a>
             </div>
         </div>
     </div>

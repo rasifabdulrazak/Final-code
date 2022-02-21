@@ -95,6 +95,7 @@ STATUS_CHOICES = {
 class Coupon(models.Model):
     coupen_code = models.CharField(max_length=6, unique=True)
     discount = models.IntegerField(default=0)
+    created_date = models.DateTimeField(auto_now_add=True,null=True)
 
 
 # ...............Table for saving order details.......................
