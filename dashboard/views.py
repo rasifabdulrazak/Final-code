@@ -98,14 +98,6 @@ def user_management(request):
         return redirect('admin_login')
 
 
-def datatable(request):
-    if request.session.has_key('admin'):
-        orders = order_placed.objects.all()
-        form = order_status()
-        return render(request, 'dashboard/demo.html', {'orders': orders, 'form': form})
-    else:
-        return redirect('user_login')
-
 
 # ..........block and Unblocking user............
 @never_cache
@@ -389,7 +381,7 @@ def coupen(request):
                 return render(request, 'dashboard/coupons.html', {'coupons': coupons, 'form': form})
         else:
             form = coupon()
-            return render(request, 'dashboard/coupons.html', {'coupons': coupons, 'form': form,'coupon_list':coupon_list})
+            return render(request, 'dashboard/coupons.html', {'coupons': coupons, 'form': form})
     else:
         return redirect('admin_login')
 

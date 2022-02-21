@@ -754,6 +754,31 @@ def delete_adress(request, pk):
         return redirect('user_login')
 
 
+def delete_check(request,pk):
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        adress = User_details.objects.filter(user=newuser, pk=pk)
+        for a in adress:
+            a.delete()
+            return redirect('checkout')
+    else:
+        return redirect('user_login')
+
+
+def delete_buy(request,pk,id):
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        adress = User_details.objects.filter(user=newuser, pk=pk)
+    
+        print(id)
+        for a in adress:
+            a.delete()
+            return redirect('/buynow/'+str(id))
+    else:
+        return redirect('user_login')
+
 # ...............USER ORDER HISTORY................
 @never_cache
 def orders(request):
@@ -1004,6 +1029,23 @@ def add_adress(request):
                     user=newuser, locality=locality, city=city, pincode=pincode, state=state)
                 save.save()
                 return redirect('checkout')
+
+def add_buy_adress(request,id):
+    form = User_detail(request.POST or None, request.FILES or None)
+    if request.session.has_key('user'):
+        user = request.session['user']
+        newuser = CustomUser.objects.get(username=user)
+        cart_count = len(Cart_details.objects.filter(user=newuser))
+        if request.method == 'POST':
+            if form.is_valid():
+                locality = form.cleaned_data['locality']
+                city = form.cleaned_data['city']
+                pincode = form.cleaned_data['pincode']
+                state = form.cleaned_data['state']
+                save = User_details(
+                    user=newuser, locality=locality, city=city, pincode=pincode, state=state)
+                save.save()
+                return redirect('/buynow/'+str(id))
 
 
 # ..............function for guest user..............

@@ -74,7 +74,7 @@
                         </thead>
                         <tbody>
                             {% for coupon in coupons %}
-                            {% if coupon not in coupon_list %}
+                            <!-- {% if coupon not in coupon_list %} -->
                             <tr>
                                 <td >{{coupon.coupen_code}}</td>
                                 <td>{{coupon.discount}}%</td>
@@ -103,7 +103,7 @@
                                     </div>
                                   </div></td>
                             </tr>  
-                            {% endif %}
+                            <!-- {% endif %} -->
                             {% endfor %}                    
                         </tbody>
                     </table>

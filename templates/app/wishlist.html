@@ -11,13 +11,14 @@
   <div class="card">
    <div class="card-body">
     <div class="row">
-     <div class="col-sm-3 text-center align-self-center"><img src="{{i.wishlist_products.image.url}}" alt="" srcset="" class="img-fluid img-thumbnail shadow-sm" height="100" width="100"> </div>
+    <div class="col-sm-3 text-center align-self-center"><img src="{{i.wishlist_products.image.url}}" alt="" srcset="" class="img-fluid img-thumbnail shadow-sm" height="100" width="100"> </div>
      <div class="col-sm-9">
       <div>
+        <a href="{% url 'product_detail' i.wishlist_products.id %}"><div>
        <h5>{{i.wishlist_products.brand}}</h5>
        <p class="mb-2 text-muted small">{{i.wishlist_products.title}}</p>
        <p class="mb-2 text-muted small">color: {{i.wishlist_products.color}}</p>
-
+      </div></a>
        <div class="d-flex justify-content-between">
     <!-- Button trigger modal -->
 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal{{i.id}}">

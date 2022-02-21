@@ -25,7 +25,6 @@ urlpatterns = [
     path('order_management/', views.order_management, name='order_management'),
     path('edit_status/<int:pk>', views.edit_status, name='edit_status'),
     path('admin_logout/', views.admin_logout, name='admin_logout'),
-    path('datatable/', views.datatable, name='datatable'),
     path('sales_report/', salesreport.sales_report, name='sales_report'),
     path('product_offer/', views.product_offer, name='product-offer'),
     path('remove_prod_offer/<int:pk>/',

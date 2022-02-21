@@ -85,7 +85,7 @@
                         <form action="{% url 'yearly_report' %}" method="post">
                             {% csrf_token %}
                         <div class="col-md-12 text-center mb-4 mt-1">
-                        <div><p>Yearly Reports</p><input class="form-control" type="text" name="year" placeholder="Enter the year"></div>
+                        <div><p>Yearly Reports</p><input class="form-control" type="number" name="year" placeholder="Enter the year" required></div>
                         <button class="btn btn-success form-control" type="submit">Search</button>
                         </div>
                     </form>

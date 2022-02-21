@@ -10,7 +10,7 @@
       <h4>Order Summary</h4>
       <hr>
       {% if product %}
-      <!-- <input type="hidden" value="{{product.id}}" name="pk"> -->
+      <input type="hidden" value="{{product.id}}" name="pk">
       <div class="card mb-2">
         <div class="card-body">
           <h5>Product: {{product.brand}}</h5>
@@ -51,12 +51,13 @@
         understand your billing process.</small>
     </div>
     <div class="col-sm-4 offset-sm-1">
-      <h4>Select Shipping Address</h4>
+      <h4>Select Shipping Address <a href="{% url 'profile' %}"><i class="fa fa-plus" title="Add adress"></i></a></h4>      
       <hr>
 
       {% csrf_token %}
       {% if adress %}
       {% for add in adress %}
+      
       <div class="card">
         <div class="card-body">
           <h5 class="text-capitalize">{{user}}</h5>
@@ -65,6 +66,9 @@
             {{add.pincode}},
             {{add.state}}</p>
             <a href="{% url 'edit_adress' add.id %}"><i class="fa fa-edit" title="Edit adress"></i></a>
+            <a href="{% url 'delete_buy' add.id product.id  %}"><i class="fa fa-trash" title="Delete adress"></i></a>
+            
+          
         </div>
         </div>
         <form action="{% url 'buy_now_payment' product.id 1  %}">
@@ -75,7 +79,7 @@
         </div>
       {% endfor %}
       {% else %}
-      <form action="{% url 'add_adress' %}" method="post">
+      <form action="{% url 'add_buy_adress' product.id %}" method="post">
         {% csrf_token %}
       <div>{{form|crispy}}</div>
       <button class="btn btn-info" type="submit">Add</button>
@@ -85,8 +89,8 @@
         <div class="text-center mt-2">
           <!-- Button trigger modal -->
 
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Cash on deliver
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 350px;">
+            Cash on delivery
           </button>
 
           <!-- Modal -->
@@ -114,7 +118,7 @@
       <form action="{% url 'buy_now_payment' product.id 2 %}">
         {% csrf_token %}
         <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="rzp_test_az3fn8j9AYBZwn" data-amount="{{amount}}"
-          data-currency="INR" data-order_id="{{payment.id}}" . data-buttontext="Pay with Razorpay" data-name="Eshopee"
+          data-currency="INR" data-order_id="{{payment.id}}" . data-buttontext="Razorpay" data-name="Eshopee"
           data-description="A Wild Sheep Chase is the third novel by Japanese author Haruki Murakami"
           data-image="https://example.com/your_logo.jpg" data-prefill.name=""
           data-prefill.email="gaurav.kumar@example.com" data-theme.color="#F37254"></script>
@@ -192,5 +196,15 @@
   }
 }
 </script>
+
+<style>
+  .razorpay-payment-button{
+    width: 350px;
+    background-color:#3e4444;
+    height: 40px;
+    border-radius: 5px;
+    color: aliceblue;
+  }
+</style>
 
 {% endblock payment-gateway %}
