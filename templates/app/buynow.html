@@ -73,7 +73,7 @@
         </div>
         <form action="{% url 'buy_now_payment' product.id 1  %}">
         <div class="form-check mt-2 mb-5">
-          <input class="form-check-input" type="radio" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}" onclick="setVal({{add.id}})">
+          <input class="form-check-input" type="radio" name="custid" value="{{add.id}}" id="custadd{{forloop.counter}}">
           <label class="form-check-label fw-bold" for="useradd{{forloop.counter}}">
             Address: {{forloop.counter}} </label>
         </div>
@@ -184,10 +184,6 @@
 </script>
 
 <script>
-  function setVal(id){
-     document.getElementById("add-id").value = id
-  }
-
   function validateForm() {
   let x = document.forms["myForm"]["couponcode"].value;
   if (x == "") {

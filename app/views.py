@@ -771,8 +771,6 @@ def delete_buy(request,pk,id):
         user = request.session['user']
         newuser = CustomUser.objects.get(username=user)
         adress = User_details.objects.filter(user=newuser, pk=pk)
-    
-        print(id)
         for a in adress:
             a.delete()
             return redirect('/buynow/'+str(id))

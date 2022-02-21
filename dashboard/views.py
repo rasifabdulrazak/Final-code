@@ -10,9 +10,10 @@ import django_filters
 from django_filters import DateFilter
 from datetime import datetime
 from datetime import date
-# ...............admin-login..............
 
 
+
+# ...............admin-login.............
 @never_cache
 def admin_login(request):
     form = LoginForm(request.POST or None, request.FILES or None)
@@ -41,6 +42,7 @@ def admin_login(request):
                 return render(request, 'dashboard/authentication-login.html', {'form': form, 'error': error})
     else:
         return render(request, 'dashboard/authentication-login.html', {'form': form})
+
 
 
 # ..............admin-dashboard...............
