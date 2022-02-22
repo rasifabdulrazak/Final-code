@@ -57,11 +57,6 @@ class Cart_details(models.Model):
         return self.quantity * self.products.discounted_price
 
 
-# ...........table for wishlist................
-class wishlist(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE,null = True)
-    wishlist_products = models.ForeignKey(Products, on_delete=models.CASCADE)
-    guest_user = models.CharField(max_length = 300,default = "")
 
 
 # ...................Table for Adress of user...............
@@ -116,3 +111,10 @@ class order_placed(models.Model):
     def total_cost(self):
         return self.quantity * self.product.discounted_price
 
+
+
+# ...........table for wishlist................
+class wishlist(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE,null=True)
+    wishlist_products = models.ForeignKey(Products, on_delete=models.CASCADE)
+    guest_user = models.CharField(max_length = 300,null=True)

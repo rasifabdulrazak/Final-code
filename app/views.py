@@ -401,6 +401,7 @@ def add_to_cart(request, pk):
         Cart_details(user=newuser, products=product_id,
                      sub_total=product_id.discounted_price, quantity=1).save()
         cart = Cart_details.objects.filter(user=newuser)
+        wishlist.objects.filter(user=newuser,wishlist_products=product_id).delete()
         return redirect('show_cart')
     else:
         product_id = Products.objects.get(pk=pk)
@@ -410,6 +411,7 @@ def add_to_cart(request, pk):
         Cart_details(guest_user=session_key, products=product_id,
                      sub_total=product_id.discounted_price, quantity=1).save()
         cart = Cart_details.objects.filter(guest_user=session_key)
+        wishlist.objects.filter(guest_user=session_key,wishlist_products=product_id).delete()
         return redirect('show_cart')
 
 
